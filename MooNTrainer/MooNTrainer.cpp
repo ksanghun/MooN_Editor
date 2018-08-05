@@ -23,6 +23,7 @@ BEGIN_MESSAGE_MAP(CMooNTrainerApp, CWinAppEx)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
+//	ON_COMMAND(ID_FILE_OPEN, &CMooNTrainerApp::OnFileOpen)
 END_MESSAGE_MAP()
 
 
@@ -195,3 +196,16 @@ void CMooNTrainerApp::SaveCustomState()
 
 
 
+
+
+//void CMooNTrainerApp::OnFileOpen()
+//{
+//	// TODO: Add your command handler code here
+//	static TCHAR BASED_CODE szFilter[] = _T("Text file(*.TXT, *.txt) | *.TXT;*.txt; |모든파일(*.*)|*.*||");
+//	CFileDialog dlg(TRUE, _T("*.txt"), _T("Text file"), OFN_HIDEREADONLY, szFilter);
+//
+//	if (dlg.DoModal() == IDOK) {
+//		for (POSITION pos = dlg.GetStartPosition(); pos != NULL;)
+//			OpenDocumentFile(dlg.GetNextPathName(pos));
+//	}
+//}

@@ -3,10 +3,8 @@
 //
 
 #pragma once
-#include "FileView.h"
-#include "ClassView.h"
 #include "OutputWnd.h"
-#include "PropertiesWnd.h"
+#include "DockProperties.h"
 
 class CMainFrame : public CFrameWndEx
 {
@@ -17,7 +15,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
-
+	void AddOutputString(CString str, bool IsReplace);
 // Operations
 public:
 
@@ -35,14 +33,15 @@ public:
 #endif
 
 protected:  // control bar embedded members
-	CMFCMenuBar       m_wndMenuBar;
-	CMFCToolBar       m_wndToolBar;
-	CMFCStatusBar     m_wndStatusBar;
-	CMFCToolBarImages m_UserImages;
-	CFileView         m_wndFileView;
-	CClassView        m_wndClassView;
+	//CMFCMenuBar       m_wndMenuBar;
+	//CMFCToolBar       m_wndToolBar;
+	//CMFCStatusBar     m_wndStatusBar;
+	//CMFCToolBarImages m_UserImages;
+	//CFileView         m_wndFileView;
+	//CClassView        m_wndClassView;
 	COutputWnd        m_wndOutput;
-	CPropertiesWnd    m_wndProperties;
+	CDockProperties	  m_wndProperties;
+	CString			  m_strInitPath;
 
 // Generated message map functions
 protected:
@@ -56,6 +55,15 @@ protected:
 
 	BOOL CreateDockingWindows();
 	void SetDockingWindowIcons(BOOL bHiColorIcons);
+	void InitUserData();
+	void SaveUserData();
+public:
+
+	afx_msg void OnFileOpen();
+	afx_msg void OnToolValiDb();
+
+	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy);
+	void ResetListCtrl();
 };
 
 

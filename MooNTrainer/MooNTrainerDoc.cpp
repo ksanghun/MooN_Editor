@@ -58,6 +58,7 @@ void CMooNTrainerDoc::Serialize(CArchive& ar)
 	if (ar.IsStoring())
 	{
 		// TODO: add storing code here
+		int a = 0;
 	}
 	else
 	{

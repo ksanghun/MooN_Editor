@@ -115,10 +115,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>./include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_calib3d330d.lib;opencv_core330d.lib;opencv_features2d330d.lib;opencv_highgui330d.lib;opencv_imgcodecs330d.lib;opencv_imgproc330d.lib;opencv_objdetect330d.lib;opencv_photo330d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -167,12 +170,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>./include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_calib3d330.lib;opencv_core330.lib;opencv_features2d330.lib;opencv_highgui330.lib;opencv_imgcodecs330.lib;opencv_imgproc330.lib;opencv_objdetect330.lib;opencv_photo330.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -189,28 +195,32 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClassView.h" />
-    <ClInclude Include="FileView.h" />
+    <ClInclude Include="DockProperties.h" />
+    <ClInclude Include="FormViewEditDB.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="MNDBLayer.h" />
+    <ClInclude Include="MNDBLayerImage.h" />
     <ClInclude Include="MooNTrainer.h" />
     <ClInclude Include="MooNTrainerDoc.h" />
     <ClInclude Include="MooNTrainerView.h" />
     <ClInclude Include="OutputWnd.h" />
-    <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ViewTree.h" />
+    <ClInclude Include="ZEdit.h" />
+    <ClInclude Include="ZListCtrlLog.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ClassView.cpp" />
-    <ClCompile Include="FileView.cpp" />
+    <ClCompile Include="DockProperties.cpp" />
+    <ClCompile Include="FormViewEditDB.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="MNDBLayer.cpp" />
+    <ClCompile Include="MNDBLayerImage.cpp" />
     <ClCompile Include="MooNTrainer.cpp" />
     <ClCompile Include="MooNTrainerDoc.cpp" />
     <ClCompile Include="MooNTrainerView.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
-    <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -218,6 +228,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ViewTree.cpp" />
+    <ClCompile Include="ZEdit.cpp" />
+    <ClCompile Include="ZListCtrlLog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MooNTrainer.rc" />
@@ -255,4 +267,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="MooNTrainer.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

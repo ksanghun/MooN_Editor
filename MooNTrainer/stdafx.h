@@ -33,11 +33,17 @@
 #include <afxcontrolbars.h>     // MFC support for ribbons and control bars
 
 
+//#include <opencv2/highgui.hpp>
+//#include <opencv2/imgproc.hpp>
+//#include "opencv2/objdetect.hpp"
+//#include "opencv2/imgproc/imgproc.hpp"
+//#include "opencv2/photo/photo.hpp"
 
+class CMainFrame;
+extern CMainFrame* pMain;
 
-
-
-
+class CMooNTrainerView;
+extern CMooNTrainerView* pView;
 
 
 #ifdef _UNICODE

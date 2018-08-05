@@ -5,6 +5,8 @@
 #include "Resource.h"
 #include "MainFrm.h"
 
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -45,9 +47,7 @@ int COutputWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Create output panes:
 	const DWORD dwStyle = LBS_NOINTEGRALHEIGHT | WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL;
 
-	if (!m_wndOutputBuild.Create(dwStyle, rectDummy, &m_wndTabs, 2) ||
-		!m_wndOutputDebug.Create(dwStyle, rectDummy, &m_wndTabs, 3) ||
-		!m_wndOutputFind.Create(dwStyle, rectDummy, &m_wndTabs, 4))
+	if (!m_wndOutputDebug.Create(dwStyle, rectDummy, &m_wndTabs, 2))
 	{
 		TRACE0("Failed to create output windows\n");
 		return -1;      // fail to create
@@ -56,23 +56,13 @@ int COutputWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	UpdateFonts();
 
 	CString strTabName;
-	BOOL bNameValid;
+//	BOOL bNameValid;
 
 	// Attach list windows to tab:
-	bNameValid = strTabName.LoadString(IDS_BUILD_TAB);
-	ASSERT(bNameValid);
-	m_wndTabs.AddTab(&m_wndOutputBuild, strTabName, (UINT)0);
-	bNameValid = strTabName.LoadString(IDS_DEBUG_TAB);
-	ASSERT(bNameValid);
 	m_wndTabs.AddTab(&m_wndOutputDebug, strTabName, (UINT)1);
-	bNameValid = strTabName.LoadString(IDS_FIND_TAB);
-	ASSERT(bNameValid);
-	m_wndTabs.AddTab(&m_wndOutputFind, strTabName, (UINT)2);
 
 	// Fill output tabs with some dummy text (nothing magic here)
-	FillBuildWindow();
 	FillDebugWindow();
-	FillFindWindow();
 
 	return 0;
 }
@@ -104,32 +94,40 @@ void COutputWnd::AdjustHorzScroll(CListBox& wndListBox)
 	dc.SelectObject(pOldFont);
 }
 
-void COutputWnd::FillBuildWindow()
-{
-	m_wndOutputBuild.AddString(_T("Build output is being displayed here."));
-	m_wndOutputBuild.AddString(_T("The output is being displayed in rows of a list view"));
-	m_wndOutputBuild.AddString(_T("but you can change the way it is displayed as you wish..."));
-}
 
 void COutputWnd::FillDebugWindow()
 {
-	m_wndOutputDebug.AddString(_T("Debug output is being displayed here."));
-	m_wndOutputDebug.AddString(_T("The output is being displayed in rows of a list view"));
-	m_wndOutputDebug.AddString(_T("but you can change the way it is displayed as you wish..."));
+	CTime t = CTime::GetCurrentTime();
+	CString s = t.Format("-----MooN started: %m-%d-%Y %H:%M-----");
+	m_wndOutputDebug.AddString(s);
 }
 
-void COutputWnd::FillFindWindow()
-{
-	m_wndOutputFind.AddString(_T("Find output is being displayed here."));
-	m_wndOutputFind.AddString(_T("The output is being displayed in rows of a list view"));
-	m_wndOutputFind.AddString(_T("but you can change the way it is displayed as you wish..."));
-}
+
 
 void COutputWnd::UpdateFonts()
 {
-	m_wndOutputBuild.SetFont(&afxGlobalData.fontRegular);
 	m_wndOutputDebug.SetFont(&afxGlobalData.fontRegular);
-	m_wndOutputFind.SetFont(&afxGlobalData.fontRegular);
+}
+
+void COutputWnd::AddString(CString str)
+{
+//	m_wndOutputDebug.AddString(str);
+	m_wndOutputDebug.InsertString(1, str);
+
+}
+
+void COutputWnd::ReplaceString(CString str)
+{
+	m_wndOutputDebug.DeleteString(1);
+	m_wndOutputDebug.InsertString(1, str);
+
+	//int idx = m_wndOutputDebug.GetCount() - 1;
+	//if (idx < 0)
+	//	idx = 0;
+
+	//m_wndOutputDebug.DeleteString(idx);
+	//m_wndOutputDebug.AddString(str);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
