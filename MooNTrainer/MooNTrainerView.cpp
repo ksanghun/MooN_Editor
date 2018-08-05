@@ -354,7 +354,7 @@ void CMooNTrainerView::ValidateDBLayer()
 			//cv::imwrite(sz, cutsrc);
 		}
 		else {
-			pMain->AddRecord(cut, strgt, topRes.code, topRes.accur);
+			//pMain->AddRecord(cut, strgt, topRes.code, topRes.accur);
 			//strLog.Format(L"%d:Recognition result: %s-%s - %3.2f\n", i, (CString)strgt, (CString)topRes.code, topRes.accur);
 			//pMain->AddOutputString(strLog, false);
 			//for (int j = 0; j < _MAX_CANDIDATE; j++) {
