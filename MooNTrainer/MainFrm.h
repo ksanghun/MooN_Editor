@@ -62,8 +62,10 @@ public:
 	afx_msg void OnFileOpen();
 	afx_msg void OnToolValiDb();
 
-	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy);
+	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2);
 	void ResetListCtrl();
+	void SetPreviewImg(cv::Mat& pimg, CString strInfo);
+	void SetLayerImgCnt(int clsid, int imgnum);
 };
 
 

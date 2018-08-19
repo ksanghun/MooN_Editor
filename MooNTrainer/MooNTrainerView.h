@@ -3,9 +3,12 @@
 //
 
 #pragma once
+
+#include "GLVIEW.h"
 #include "MNDBLayer.h"
 
 static UINT ThreadInitDBLayer(LPVOID lpParam);
+static UINT ThreadDBValidation(LPVOID lpParam);
 
 
 class CMooNTrainerView : public CView
@@ -19,13 +22,23 @@ public:
 //	CMooNTrainerDoc* GetDocument() const;
 
 // Operations
+	void EndThread();
+
 	void ProcInitDBLayer();
 	void LoadDBLayer(CString strPath);
+
+	void ProcValidate();
+	void ChangeDisplayImage(int clsid, int id);
+
 public:
 
 private:
 	CMNDBLayer m_dbLayer;
-	cv::Mat m_dbLayerImg;
+	cv::Mat m_dbLayerMasterImg;
+//	cv::Mat m_dbLayerImg;
+
+	std::vector<_stLayerInfo>* m_pVecLayerInfo;
+
 	CPoint m_imgMove;
 	CPoint m_mousedown;
 
@@ -33,7 +46,13 @@ private:
 
 	CPoint m_leftTop;
 	float m_widthStep;
+	float m_dispScale;
+	int m_selCellId;
+	cv::Rect m_selRect;
 
+	int m_dispImgId;
+
+	CGLVIEW* m_pViewImage;
 
 // Overrides
 public:
@@ -62,6 +81,7 @@ public:
 	void DrawCvMat(CDC* pDC, cv::Mat& origin, CRect rect);
 	void Render();
 	void ValidateDBLayer();
+	void SelectCellMaster(CPoint point, bool IsAddList);
 
 	afx_msg void OnPaint();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -69,6 +89,11 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnMButtonDblClk(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };
 
 #ifndef _DEBUG  // debug version in MooNTrainerView.cpp

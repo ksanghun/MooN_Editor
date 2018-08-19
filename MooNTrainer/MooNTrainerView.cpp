@@ -17,7 +17,7 @@
 #define new DEBUG_NEW
 #endif
 
-
+enum TIMEREVNT { _ENDTHREAD = 100 };
 // CMooNTrainerView
 
 IMPLEMENT_DYNCREATE(CMooNTrainerView, CView)
@@ -31,6 +31,11 @@ BEGIN_MESSAGE_MAP(CMooNTrainerView, CView)
 	ON_WM_MOUSEMOVE()
 	ON_WM_ERASEBKGND()
 	ON_WM_TIMER()
+	ON_WM_MBUTTONDBLCLK()
+	ON_WM_LBUTTONDBLCLK()
+	ON_WM_CREATE()
+	ON_WM_SIZE()
+	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 // CMooNTrainerView construction/destruction
@@ -42,7 +47,12 @@ static UINT ThreadInitDBLayer(LPVOID lpParam)
 	return 0L;
 }
 
-
+static UINT ThreadDBValidation(LPVOID lpParam)
+{
+	CMooNTrainerView* pClass = (CMooNTrainerView*)lpParam;
+	pClass->ValidateDBLayer();
+	return 0L;
+}
 
 
 CMooNTrainerView* pView = NULL;
@@ -56,11 +66,18 @@ CMooNTrainerView::CMooNTrainerView()
 
 	m_leftTop = CPoint(0, 0);
 	m_widthStep = _UNIT_RESOLOTION_W;
+	m_dispScale = 1.0f;
+	m_selCellId = 0;
+	m_selRect = cv::Rect(0, 0, 0, 0);
 
+	m_pViewImage = NULL;
 }
 
 CMooNTrainerView::~CMooNTrainerView()
 {
+	if (m_pViewImage) {
+		delete m_pViewImage;
+	}
 }
 
 BOOL CMooNTrainerView::PreCreateWindow(CREATESTRUCT& cs)
@@ -125,14 +142,9 @@ void CMooNTrainerView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 	// TODO: Add your specialized code here and/or call the base class
-
-
-//	cv::Mat img = cv::imread("D:\\01_Project2018\\FGS_DB\\qisha canon\\class00_16.jp2");
+	//	cv::Mat img = cv::imread("D:\\01_Project2018\\FGS_DB\\qisha canon\\class00_16.jp2");
 //	cv::imshow("test", img);
 ////	cv::imwrite("D:\\01_Project2018\\FGS_DB\\qisha canon\\class00_16.jp2", img);
-
-
-	
 }
 
 void CMooNTrainerView::LoadDBLayer(CString strPath)
@@ -140,16 +152,55 @@ void CMooNTrainerView::LoadDBLayer(CString strPath)
 	m_strClassPath = strPath;
 	CWinThread* pl;
 	pl = AfxBeginThread(ThreadInitDBLayer, this);
+//	ProcInitDBLayer();
 }
 
 void CMooNTrainerView::ProcInitDBLayer()
 {
 	BeginWaitCursor();
-	m_dbLayer.Init(m_strClassPath);
-	m_dbLayerImg = m_dbLayer.GetMasterImage(0);
+	m_dbLayer.Init(m_strClassPath);	
 	EndWaitCursor();
+//	InvalidateRect(FALSE);
 
-	InvalidateRect(FALSE);
+	//m_dbLayerMasterImg = m_dbLayer.GetMasterImage(0);
+	//m_pVecLayerInfo = m_dbLayer.GetMasterImageInfo(0);
+	//m_dispImgId = 0;
+	//if (m_pViewImage) {
+	//	cv::cvtColor(m_dbLayerMasterImg, m_dbLayerMasterImg, CV_GRAY2RGB);
+	//	m_pViewImage->SetMasterImage(m_dbLayerMasterImg);
+	//}
+}
+
+
+void CMooNTrainerView::EndThread()
+{
+	SetTimer(_ENDTHREAD, 500, NULL);
+}
+
+
+void CMooNTrainerView::ProcValidate()
+{
+	CWinThread* pl;
+	pl = AfxBeginThread(ThreadDBValidation, this);
+}
+
+void CMooNTrainerView::ChangeDisplayImage(int clsid, int id)
+{
+	m_dispImgId = id;
+	//if (id == 0) {
+	//	m_dbLayerImg = m_dbLayer.GetMasterImage(clsid);
+	//}
+	//else {
+	//	m_dbLayerImg = m_dbLayer.GetLayerImageByID(clsid, id-1);
+	//}
+	
+	m_selCellId = 0;
+	m_selRect = cv::Rect(0, 0, 0, 0);
+
+	
+
+	
+	Render();
 }
 
 void CMooNTrainerView::DrawCvMat(CDC* pDC, cv::Mat& origin, CRect rect)
@@ -194,7 +245,7 @@ void CMooNTrainerView::DrawCvMat(CDC* pDC, cv::Mat& origin, CRect rect)
 	m_leftTop.x = 0;
 	m_leftTop.y = 0;
 	m_widthStep = (float)_UNIT_RESOLOTION_W * ((float)rect.Width() / (float)outImg.cols);
-
+	m_dispScale = (float)origin.cols / (float)outImg.cols;
 
 	mfcImg.BitBlt(*pDC, m_leftTop.x, m_leftTop.y);
 	mfcImg.ReleaseDC();
@@ -213,16 +264,78 @@ void CMooNTrainerView::OnPaint()
 
 void CMooNTrainerView::Render()
 {
-	CDC* pDC = GetDC();
-	HDC hDC = pDC->GetSafeHdc();
-	//CreateCompatibleDC(hDC);
-	//m_bitmap.CreateCompatibleBitmap(pDC, m_rect.Width(), m_rect.Height());
+	//CDC* pDC = GetDC();
+	//HDC hDC = pDC->GetSafeHdc();
+	////CreateCompatibleDC(hDC);
+	////m_bitmap.CreateCompatibleBitmap(pDC, m_rect.Width(), m_rect.Height());
 
-	CRect rect;
-	this->GetClientRect(&rect);
-	//rect.SetRect(-m_imgMove.x, -m_imgMove.y, m_dbLayerImg.cols - m_imgMove.x, m_dbLayerImg.rows - m_imgMove.y);	
-	if(m_dbLayerImg.ptr() != nullptr)
-		DrawCvMat(pDC, m_dbLayerImg, rect);
+	//CRect rect;
+	//this->GetClientRect(&rect);
+	////rect.SetRect(-m_imgMove.x, -m_imgMove.y, m_dbLayerImg.cols - m_imgMove.x, m_dbLayerImg.rows - m_imgMove.y);	
+	//if (m_dbLayerMasterImg.ptr() != nullptr) {
+	//	cv::Mat dispImg = m_dbLayerMasterImg.clone();
+	//	cv::cvtColor(dispImg, dispImg, CV_GRAY2BGR);
+	//	cv::rectangle(dispImg, m_selRect, cv::Scalar(0, 255, 0), 2);
+
+	//	rect.right = rect.left + rect.Width() - 240;
+	//	DrawCvMat(pDC, dispImg, rect);
+	//}
+}
+
+void CMooNTrainerView::SelectCellMaster(CPoint point, bool IsAddList)
+{
+	int imgPosx = point.x * m_dispScale;
+	int imgPosy = point.y * m_dispScale;
+
+	if ((imgPosx < m_dbLayerMasterImg.cols) && (imgPosy < m_dbLayerMasterImg.rows)) {
+
+		_stLayerImgInfo info = m_dbLayer.GetLayerImgInfo(0);
+		int xid = imgPosx / info.unitRes;
+		int yid = imgPosy / info.unitRes;
+
+		m_selCellId = yid*info.wnum + xid;
+		m_selRect.x = xid*info.unitRes;
+		m_selRect.y = yid*info.unitRes;
+		m_selRect.width = info.unitRes;
+		m_selRect.height = info.unitRes;
+		Render();
+
+		CString strLog;
+		//strLog.Format(L"Mouse Down: %d: %d, %d", m_selCellId, (int)(point.x*m_dispScale), (int)(point.y*m_dispScale));
+		//pMain->AddOutputString(strLog, false);
+
+//		if (m_dispImgId == 0) {  // In case of Master Image
+			if (m_selCellId < m_pVecLayerInfo->size()) {
+				wchar_t strcode = m_pVecLayerInfo->at(m_selCellId).strcode;
+				unsigned short uCode = strcode;
+				int trainNum = m_pVecLayerInfo->at(m_selCellId).vecPositionId.size();
+				strLog.Format(L"Code: %d (%s) \nTrained number: %d", uCode, CString(strcode), trainNum);
+				//pMain->AddOutputString(strLog, false);
+				cv::Mat cutimg = m_dbLayerMasterImg(m_selRect).clone();
+				//	cv::imshow("cut", cutimg);
+				pMain->SetPreviewImg(cutimg, strLog);
+				
+				if (m_pViewImage) {
+				//	m_pViewImage->SetMasterImageSelection(m_selRect);
+					m_pViewImage->SetMasterImageSelection(m_selCellId, _C1_WNUM, _C1_HNUM);
+				}
+
+				if (IsAddList) {
+					pMain->ResetListCtrl();
+					for (int k = 0; k < m_pVecLayerInfo->at(m_selCellId).vecPositionId.size(); k++) {
+						int charid = m_pVecLayerInfo->at(m_selCellId).vecPositionId[k];
+						wchar_t strgt;
+						cv::Mat cut = m_dbLayer.GetCutImagebyWorkPos(0, charid, strgt);
+						pMain->AddRecord(cut, strgt, '-', 0, m_selCellId, charid);
+					}
+				}
+			}
+		//}
+		//else {
+		//	cv::Mat cutimg = m_dbLayerMasterImg(m_selRect).clone();
+		//	pMain->SetPreviewImg(cutimg, strLog);
+		//}
+	}
 }
 
 void CMooNTrainerView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -230,6 +343,9 @@ void CMooNTrainerView::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 	SetCapture();
 	m_mousedown = point;
+
+//	SelectCell(point, true);
+	
 
 	CView::OnLButtonDown(nFlags, point);
 }
@@ -247,9 +363,9 @@ void CMooNTrainerView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	if (GetCapture()) {
-		m_imgMove.x += (m_mousedown.x - point.x);
-		m_imgMove.y += (m_mousedown.y - point.y);
-		m_mousedown = point;
+		//m_imgMove.x += (m_mousedown.x - point.x);
+		//m_imgMove.y += (m_mousedown.y - point.y);
+		//m_mousedown = point;
 		
 	//	InvalidateRect(FALSE);
 	}
@@ -261,16 +377,33 @@ void CMooNTrainerView::OnMouseMove(UINT nFlags, CPoint point)
 BOOL CMooNTrainerView::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: Add your message handler code here and/or call default
-	return CView::OnEraseBkgnd(pDC);
+//	return CView::OnEraseBkgnd(pDC);
 //	return TRUE;
+	return 0;
 }
 
 
 void CMooNTrainerView::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
-	if (nIDEvent == 100) {		
-		
+	if (nIDEvent == _ENDTHREAD) {		
+		m_dbLayerMasterImg = m_dbLayer.GetMasterImage(0);
+		m_pVecLayerInfo = m_dbLayer.GetMasterImageInfo(0);
+		m_dispImgId = 0;
+		if (m_pViewImage) {
+			cv::cvtColor(m_dbLayerMasterImg, m_dbLayerMasterImg, CV_GRAY2RGB);
+			m_pViewImage->SetMasterImage(m_dbLayerMasterImg);
+
+			// Add Sub Layer //
+			for (int i = 0; i < m_dbLayer.GetClassImgNum(0); i++) {
+				cv::Mat img = m_dbLayer.GetLayerImageByID(0, i);
+				cv::cvtColor(img, img, CV_GRAY2RGB);
+				m_pViewImage->SetSubLayer(img, i/3, i%3);
+				img.release();
+			}
+		}
+
+		KillTimer(_ENDTHREAD);
 	}
 
 	CView::OnTimer(nIDEvent);
@@ -290,11 +423,25 @@ void CMooNTrainerView::ValidateDBLayer()
 	int totalnum = 0;
 	int dberrcnt = 0;
 	CString strLog;
+
+
+	strLog = L"Start DB Validation...";
+	pMain->AddOutputString(strLog, false);
+
+
+	CString strLog2[3];
+	strLog2[0] = L"Processing.		";
+	strLog2[1] = L"Processing..		";
+	strLog2[2] = L"Processing...	";
+	int logidx = 0;
+
 	for (int i = start; i < start + num; i++) {
 
 		wchar_t strgt;
 		cv::Mat cut = m_dbLayer.GetCutImagebyWorkPos(0, i, strgt);
 		cv::Mat cutsrc = cut.clone();
+
+		m_pViewImage->SetSubImageSelection(i, _C1_WNUM, _C1_HNUM);
 
 		//cv::bitwise_not(cut, cut);
 		//cut = deskew(cut);
@@ -314,7 +461,7 @@ void CMooNTrainerView::ValidateDBLayer()
 		//	topRes.accur = res.accur[0];
 		//	topRes.code = res.code[0];
 		//}
-
+		m_pViewImage->SetMasterImageSelection(topRes.firstlayerIdx, _C1_WNUM, _C1_HNUM);
 
 		bool ismatch = false;
 		if (topRes.code == strgt) {
@@ -333,8 +480,11 @@ void CMooNTrainerView::ValidateDBLayer()
 		if (ismatch == false) {
 			strLog.Format(L"%d: Not matched... %s-%s - %3.2f\n", i, (CString)strgt, (CString)topRes.code, topRes.accur);
 			pMain->AddOutputString(strLog, false);
-			pMain->AddRecord(cut, strgt, topRes.code, topRes.accur);
+			pMain->AddRecord(cut, strgt, topRes.code, topRes.accur, topRes.firstlayerIdx, i);
 			
+			strLog.Format(L"Processing...	(%d/%d)", i, num - 1);
+			pMain->AddOutputString(strLog, false);
+
 			//for (int j = 0; j < _MAX_CANDIDATE; j++) {
 			//	strLog.Format(L"%d: Top-10... %s-%s - %3.2f\n", j, (CString)strgt, (CString)res.code[j], res.accur[j]);
 			//	pMain->AddOutputString(strLog, false);
@@ -361,7 +511,23 @@ void CMooNTrainerView::ValidateDBLayer()
 			//	strLog.Format(L"%d: Top-10... %s-%s - %3.2f\n", j, (CString)strgt, (CString)res.code[j], res.accur[j]);
 			//	pMain->AddOutputString(strLog, false);
 			//}
+
+			if (i % 10 == 0) {
+				strLog.Format(L"%s	(%d/%d)", strLog2[logidx], i, num - 1);
+				pMain->AddOutputString(strLog, true);
+				logidx++;
+				if (logidx > 2) logidx = 0;
+
+			}
 		}
+
+
+
+		
+
+				
+		
+
 	}
 
 	clock_t end = clock();
@@ -373,8 +539,72 @@ void CMooNTrainerView::ValidateDBLayer()
 	//strLog.Format(L"Match precision %3.6f\n", precision);
 
 	//	TRACE(L"Match Result %s(%s) - %3.2f\n", (CString)strgt, (CString)strcode, faccur);
-	strLog.Format(L"Elapsed Time: %3.2f, Precison(Top-10): %3.2f, DB error: %d", (float)elapsed_secs, precision, dberrcnt);
+	strLog.Format(L"End DB Validation, Elapsed Time: %3.2f, Precison(Top-10): %3.2f, DB error: %d", (float)elapsed_secs, precision, dberrcnt);
 	strLog += L"%";
 	pMain->AddOutputString(strLog, false);
 
+}
+
+
+void CMooNTrainerView::OnMButtonDblClk(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	CView::OnMButtonDblClk(nFlags, point);
+}
+
+
+void CMooNTrainerView::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	//m_mousedown = point;
+	//SelectCell(point, true);
+
+	CView::OnLButtonDblClk(nFlags, point);
+}
+
+
+int CMooNTrainerView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CView::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  Add your specialized creation code here
+	CRect cRect;
+	GetWindowRect(&cRect);
+	if (m_pViewImage == NULL) {
+		m_pViewImage = new CGLVIEW;
+		//	m_pImageView->Create(NULL, NULL, WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE, cRect, this, 0x01);
+		m_pViewImage->Create(NULL, NULL, WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE, cRect, this, 0x01);
+		
+		cv::Mat bgimg = cv::imread("./img/bg.png");
+		cv::resize(bgimg, bgimg, cv::Size(1024, 1024));
+		
+		cv::cvtColor(bgimg, bgimg, CV_BGR2RGB);
+		m_pViewImage->InitGLview(0, 0, bgimg);
+		bgimg.release();
+
+	}
+
+	return 0;
+}
+
+
+void CMooNTrainerView::OnSize(UINT nType, int cx, int cy)
+{
+	CView::OnSize(nType, cx, cy);
+
+	// TODO: Add your message handler code here
+	if (m_pViewImage) {
+		m_pViewImage->MoveWindow(0, 0, cx, cy);
+	}
+}
+
+
+BOOL CMooNTrainerView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	// TODO: Add your message handler code here and/or call default
+	if (m_pViewImage) {
+		m_pViewImage->MouseWheel(zDelta);
+	}
+	return CView::OnMouseWheel(nFlags, zDelta, pt);
 }

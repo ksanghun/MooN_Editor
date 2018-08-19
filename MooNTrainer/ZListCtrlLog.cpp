@@ -117,6 +117,7 @@ void CZListCtrlLog::InitListCtrl()
 
 void CZListCtrlLog::ResetListCtrl()
 {
+	m_Edit.ShowWindow(SW_HIDE);
 	DeleteAllItems();
 	m_nRecordNum = 0;
 
@@ -640,6 +641,9 @@ void CZListCtrlLog::OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	m_currDrawId = 0;
 	m_colorid = 0;
+
+	UpdateCodeValue();
+	m_Edit.ShowWindow(SW_HIDE);
 
 	//LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	//// TODO: Add your control notification handler code here

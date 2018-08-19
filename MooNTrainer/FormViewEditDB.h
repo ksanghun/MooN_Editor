@@ -7,6 +7,7 @@
 #include "opencv2/objdetect.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/photo/photo.hpp"
+#include "afxwin.h"
 
 // CFormViewEditDB form view
 #define _LIST_ICON_SIZE 32
@@ -38,6 +39,8 @@ private:
 	int m_nRecordNum;
 	int m_imgListId;
 
+
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -51,8 +54,14 @@ public:
 
 
 	void ResetLogList();
-	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy);
+	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2);
 	CBitmap* GetLogCBitmap(cv::Mat& pimg);
+	void SetPreviewImg(cv::Mat& pimg, CString strInfo);
+	void SetLayerImgCnt(int clsid, int imgnum);
+
+	CString m_staticPreviewInfo;
+	CComboBox m_comboImgList;
+	afx_msg void OnCbnSelchangeComboImglist();
 };
 
 

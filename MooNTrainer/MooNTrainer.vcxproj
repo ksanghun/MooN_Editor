@@ -195,14 +195,20 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera2Axis.h" />
+    <ClInclude Include="data_type.h" />
     <ClInclude Include="DockProperties.h" />
     <ClInclude Include="FormViewEditDB.h" />
+    <ClInclude Include="GLVIEW.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="math_tool.h" />
     <ClInclude Include="MNDBLayer.h" />
     <ClInclude Include="MNDBLayerImage.h" />
     <ClInclude Include="MooNTrainer.h" />
     <ClInclude Include="MooNTrainerDoc.h" />
     <ClInclude Include="MooNTrainerView.h" />
+    <ClInclude Include="ObjImage.h" />
+    <ClInclude Include="OGLWnd.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -212,14 +218,19 @@
     <ClInclude Include="ZListCtrlLog.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera2Axis.cpp" />
     <ClCompile Include="DockProperties.cpp" />
     <ClCompile Include="FormViewEditDB.cpp" />
+    <ClCompile Include="GLVIEW.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="math_tool.cpp" />
     <ClCompile Include="MNDBLayer.cpp" />
     <ClCompile Include="MNDBLayerImage.cpp" />
     <ClCompile Include="MooNTrainer.cpp" />
     <ClCompile Include="MooNTrainerDoc.cpp" />
     <ClCompile Include="MooNTrainerView.cpp" />
+    <ClCompile Include="ObjImage.cpp" />
+    <ClCompile Include="OGLWnd.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

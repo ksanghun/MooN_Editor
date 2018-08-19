@@ -2,7 +2,7 @@
 #include "MNDBLayer.h"
 #include <ctime>
 #include "MainFrm.h"
-
+#include "MooNTrainerView.h"
 
 
 
@@ -34,6 +34,8 @@ void CMNDBLayer::Init(CString strDbPath)
 	CString strLog;
 	strLog.Format(L"Elapsed Time: %3.2f seconds\n", (float)elapsed_secs);
 	pMain->AddOutputString(strLog, false);
+	
+	pView->EndThread();
 }
 
 
@@ -100,4 +102,19 @@ cv::Mat& CMNDBLayer::GetClassImage(int clsid, int wordIdx)
 int CMNDBLayer::GetTotalCodeNum(int clsid)
 {
 	return m_layerImage[clsid].GetCodeNum();
+}
+
+std::vector<_stLayerInfo>* CMNDBLayer::GetMasterImageInfo(int clsid)
+{ 
+	return m_layerImage[clsid].GetFirstLayerInfo();
+}
+
+_stLayerImgInfo CMNDBLayer::GetLayerImgInfo(int clsid)
+{
+	_stLayerImgInfo info;
+	info.wnum = _C1_WNUM;
+	info.hnum = _C1_HNUM;
+	info.unitRes = _UNIT_RESOLOTION_W;
+	info.codelen = _C1_CODE_LEN;
+	return info;
 }

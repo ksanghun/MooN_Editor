@@ -2,10 +2,15 @@
 
 #include "MNDBLayerImage.h"
 
-#define _C1_WNUM 60
-#define _C1_HNUM 60
-#define _UNIT_RESOLOTION_W 32
-#define _C1_CODE_LEN 4
+
+
+
+typedef struct _stLayerImgInfo{
+	int wnum, hnum;
+	int unitRes;
+	int codelen;
+}_stLayerImgInfo;
+
 
 class CMNDBLayer
 {
@@ -23,6 +28,8 @@ public:
 	cv::Mat FitBoundingBox(cv::Mat img);
 	cv::Mat& GetClassImage(int clsid, int wordIdx);
 	int GetTotalCodeNum(int clsid);
+	std::vector<_stLayerInfo>* GetMasterImageInfo(int clsid); 
+	_stLayerImgInfo GetLayerImgInfo(int clsid);
 private:
 
 	CMNDBLayerImage m_layerImage[8];	

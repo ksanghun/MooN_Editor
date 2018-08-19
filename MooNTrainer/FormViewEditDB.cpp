@@ -13,6 +13,7 @@ IMPLEMENT_DYNCREATE(CFormViewEditDB, CFormView)
 
 CFormViewEditDB::CFormViewEditDB()
 	: CFormView(IDD_FORMVIEWEDITDB)
+	, m_staticPreviewInfo(_T(""))
 {
 	m_bIsCreated = false;
 }
@@ -25,11 +26,14 @@ void CFormViewEditDB::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_RESULT, m_listCtrl);
+	DDX_Text(pDX, IDC_STATIC_INFO, m_staticPreviewInfo);
+	DDX_Control(pDX, IDC_COMBO_IMGLIST, m_comboImgList);
 }
 
 BEGIN_MESSAGE_MAP(CFormViewEditDB, CFormView)
 
 	ON_WM_SIZE()
+	ON_CBN_SELCHANGE(IDC_COMBO_IMGLIST, &CFormViewEditDB::OnCbnSelchangeComboImglist)
 END_MESSAGE_MAP()
 
 
@@ -65,7 +69,7 @@ BOOL CFormViewEditDB::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWOR
 void CFormViewEditDB::OnBnClickedBnDbValidation()
 {
 	// TODO: Add your control notification handler code here
-	pView->ValidateDBLayer();
+	pView->ProcValidate();
 }
 
 
@@ -75,8 +79,9 @@ void CFormViewEditDB::OnSize(UINT nType, int cx, int cy)
 	CFormView::OnSize(nType, cx, cy);
 
 	// TODO: Add your message handler code here
-	if (m_bIsCreated)
+	if (m_bIsCreated) {
 		m_listCtrl.MoveWindow(10, 120, cx - 20, cy - 130);
+	}
 }
 
 
@@ -91,7 +96,7 @@ void CFormViewEditDB::OnInitialUpdate()
 	m_bIsCreated = true;
 	int w = r.right - r.left;
 	int h = r.bottom - r.top;
-	m_listCtrl.MoveWindow(10, 120, w-20, h-130);
+	m_listCtrl.MoveWindow(10, 150, w-20, h-160);
 	
 
 	m_listCtrl.EnableScrollBarCtrl(SB_HORZ);
@@ -100,10 +105,12 @@ void CFormViewEditDB::OnInitialUpdate()
 	m_listCtrl.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
 
 	m_listCtrl.InitListCtrl();
-	m_listCtrl.AddUserColumn(L"Cut Image", _LIST_ICON_SIZE);
+	m_listCtrl.AddUserColumn(L"Cut Image", _LIST_ICON_SIZE+5);
 	m_listCtrl.AddUserColumn(L"Trained", 70);
 	m_listCtrl.AddUserColumn(L"Recognized", 70);
-	m_listCtrl.AddUserColumn(L"Accuracy", 70);
+	m_listCtrl.AddUserColumn(L"Accuracy", 50);
+	m_listCtrl.AddUserColumn(L"ID1", 50);
+	m_listCtrl.AddUserColumn(L"ID2", 50);
 
 
 	UINT nFlags = ILC_MASK;
@@ -123,6 +130,65 @@ void CFormViewEditDB::ResetLogList()
 	m_listCtrl.ResetListCtrl();
 	m_nRecordNum = 0;
 	m_imgListId = 0;
+}
+
+void CFormViewEditDB::SetLayerImgCnt(int clsid, int imgnum)
+{
+	CString strFile;
+	m_comboImgList.Clear();
+
+	strFile.Format(L"Trained Layer", clsid);
+	m_comboImgList.AddString(strFile);
+	for (int i = 0; i < imgnum; i++) {
+		strFile.Format(L"Class_%02d_%02d Sublayer", clsid, i);
+		m_comboImgList.AddString(strFile);
+	}
+	m_comboImgList.SetCurSel(0);
+//	UpdateData(FALSE);
+}
+
+void CFormViewEditDB::SetPreviewImg(cv::Mat& pimg, CString strInfo)
+{
+	IplImage* pImg = new IplImage(pimg);
+
+	if (pImg != nullptr) {
+		CWnd* pWnd_ImageTraget = GetDlgItem(IDC_STATIC_PREVIEW);
+		CClientDC dcImageTraget(pWnd_ImageTraget);
+		RECT rcImageTraget;
+		pWnd_ImageTraget->GetClientRect(&rcImageTraget);
+
+		BITMAPINFO bitmapInfo;
+		memset(&bitmapInfo, 0, sizeof(bitmapInfo));
+		bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+		bitmapInfo.bmiHeader.biPlanes = 1;
+		bitmapInfo.bmiHeader.biCompression = BI_RGB;
+		bitmapInfo.bmiHeader.biWidth = pImg->width;
+		bitmapInfo.bmiHeader.biHeight = -pImg->height;
+
+		IplImage *tempImage = nullptr;
+
+		if (pImg->nChannels == 1)
+		{
+			tempImage = cvCreateImage(cvSize(pImg->width, pImg->height), IPL_DEPTH_8U, 3);
+			cvCvtColor(pImg, tempImage, CV_GRAY2BGR);
+		}
+		else if (pImg->nChannels == 3)
+		{
+			tempImage = cvCloneImage(pImg);
+		}
+
+		bitmapInfo.bmiHeader.biBitCount = tempImage->depth * tempImage->nChannels;
+
+		dcImageTraget.SetStretchBltMode(COLORONCOLOR);
+		::StretchDIBits(dcImageTraget.GetSafeHdc(), rcImageTraget.left, rcImageTraget.top, rcImageTraget.right, rcImageTraget.bottom,
+			0, 0, tempImage->width, tempImage->height, tempImage->imageData, &bitmapInfo, DIB_RGB_COLORS, SRCCOPY);
+
+
+
+		m_staticPreviewInfo = strInfo;
+		UpdateData(FALSE);
+
+	}
 }
 
 CBitmap* CFormViewEditDB::GetLogCBitmap(cv::Mat& pimg)
@@ -197,7 +263,7 @@ CBitmap* CFormViewEditDB::GetLogCBitmap(cv::Mat& pimg)
 }
 
 
-void CFormViewEditDB::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy)
+void CFormViewEditDB::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2)
 {
 	//	ResetLogList();	
 	CString strItem;
@@ -219,7 +285,21 @@ void CFormViewEditDB::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t str
 		strItem.Format(L"%3.2f", fAccuracy*100);
 		m_listCtrl.SetItem(m_nRecordNum, 3, LVIF_TEXT, strItem, m_imgListId, 0, 0, NULL);
 
+		strItem.Format(L"%d", _id1);
+		m_listCtrl.SetItem(m_nRecordNum, 4, LVIF_TEXT, strItem, m_imgListId, 0, 0, NULL);
+
+		strItem.Format(L"%d", _id2);
+		m_listCtrl.SetItem(m_nRecordNum, 5, LVIF_TEXT, strItem, m_imgListId, 0, 0, NULL);
+
 		m_nRecordNum++;
 		m_imgListId++;
 	}
+}
+
+void CFormViewEditDB::OnCbnSelchangeComboImglist()
+{
+	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);
+	int id = m_comboImgList.GetCurSel();
+	pView->ChangeDisplayImage(0, id);
 }

@@ -105,10 +105,10 @@ void CDockProperties::SetEncodedFilePath(CString strPath)
 	//}
 }
 
-void CDockProperties::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognizede, float fAccuracy)
+void CDockProperties::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognizede, float fAccuracy, int _id1, int _id2)
 {
 	if (m_pProperties) {
-		m_pProperties->AddRecord(srcImg, strTrained, strRecognizede, fAccuracy);
+		m_pProperties->AddRecord(srcImg, strTrained, strRecognizede, fAccuracy, _id1, _id2);
 	}
 }
 
@@ -116,5 +116,19 @@ void CDockProperties::ResetListCtrl()
 {
 	if (m_pProperties) {
 		m_pProperties->ResetLogList();
+	}
+}
+
+void CDockProperties::SetPreviewImg(cv::Mat& pimg, CString strInfo)
+{
+	if (m_pProperties) {
+		m_pProperties->SetPreviewImg(pimg, strInfo);
+	}
+}
+
+void CDockProperties::SetLayerImgCnt(int clsid, int imgnum)
+{
+	if (m_pProperties) {
+		m_pProperties->SetLayerImgCnt(clsid, imgnum);
 	}
 }

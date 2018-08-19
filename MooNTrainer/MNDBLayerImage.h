@@ -9,13 +9,20 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/photo/photo.hpp"
 
+#define _C1_WNUM 60
+#define _C1_HNUM 60
+#define _UNIT_RESOLOTION_W 32
+#define _C1_CODE_LEN 4
+
+
+
 typedef struct {
-	cv::Mat hogFeature;
+//	cv::Mat hogFeature;
 	std::vector<int> vecPositionId;
 	wchar_t strcode;
 }_stLayerInfo;
 
-#define _MAX_CANDIDATE 5
+#define _MAX_CANDIDATE 10
 typedef struct {
 	float accur[_MAX_CANDIDATE];
 	wchar_t code[_MAX_CANDIDATE];
@@ -24,12 +31,15 @@ typedef struct {
 typedef struct {
 	float accur;
 	wchar_t code;
+	int firstlayerIdx;
 }_recognitionResult;
 
 typedef struct {
 	cv::Mat img;
 	bool bNedUpdate;
 }_dbMat;
+
+
 
 
 class CMNDBLayerImage
@@ -45,12 +55,14 @@ public:
 	cv::Mat FitBoundingBox(cv::Mat img);
 	_recognitionResult GetMatchResultByPixel(cv::Mat& cutImg, _stMatcResTop5& res);
 	void GetMatchResultByHOG(cv::Mat cutImg, _stMatcResTop5& res);
-	int GetClassImgNum() { (int)m_imageDb.size(); }
+	int GetClassImgNum() { return (int)m_imageDb.size(); }
 	cv::Mat& GetMasterImage() { return m_firstlayerImage; }
-	cv::Mat& GetLayerImageByID(int id) { return m_imageDb[id].img; }
+	cv::Mat& GetLayerImageByID(int id);// { return m_imageDb[id].img; }
 
 	_recognitionResult DeepMatching(cv::Mat cutImg, unsigned short charcode);
 	int GetCodeNum() { return m_totalCodeNum; }
+	std::vector<_stLayerInfo>* GetFirstLayerInfo() { return &m_vecLayerInfo; }
+
 private:
 
 	int m_classId;

@@ -25,8 +25,10 @@ public:
 	//void DoKeywordSearch() {		m_pProperties->DoKeywordSearch();	};
 	//void RotateSelLinebox() {		m_pProperties->RotateSelLinebox();	 };
 
-	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy);
+	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2);
 	void ResetListCtrl();
+	void SetPreviewImg(cv::Mat& pimg, CString strInfo);
+	void SetLayerImgCnt(int clsid, int imgnum);
 
 protected:
 	DECLARE_MESSAGE_MAP()

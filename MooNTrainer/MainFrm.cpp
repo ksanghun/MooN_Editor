@@ -223,13 +223,13 @@ BOOL CMainFrame::CreateDockingWindows()
 	CString strOutputWnd;
 	bNameValid = strOutputWnd.LoadString(IDS_OUTPUT_WND);
 	ASSERT(bNameValid);
-	if (!m_wndOutput.Create(strOutputWnd, this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
+	if (!m_wndOutput.Create(strOutputWnd, this, CRect(0, 0, 300, 300), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
 	{
 		TRACE0("Failed to create Output window\n");
 		return FALSE; // failed to create
 	}
 
-	if (!m_wndProperties.Create(L"", this, CRect(0, 0, 300, 300), TRUE, ID_VIEW_PROPERTIESWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT))
+	if (!m_wndProperties.Create(L"", this, CRect(0, 0, 500, 500), TRUE, ID_VIEW_PROPERTIESWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT))
 	{
 		TRACE0("Failed to create Properties window\n");
 		return FALSE; // failed to create
@@ -430,7 +430,7 @@ void CMainFrame::AddOutputString(CString str, bool IsReplace)
 		m_wndOutput.ReplaceString(str);
 	}
 	else {
-		m_wndOutput.AddString(str);
+		m_wndOutput.AddString(str);	
 	}
 }
 
@@ -477,7 +477,8 @@ void CMainFrame::OnFileOpen()
 void CMainFrame::OnToolValiDb()
 {
 	// TODO: Add your command handler code here
-	pView->ValidateDBLayer();
+	//pView->ValidateDBLayer();
+	pView->ProcValidate();
 }
 
 
@@ -536,12 +537,21 @@ void CMainFrame::SaveUserData()
 }
 
 
-void CMainFrame::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy)
+void CMainFrame::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2)
 {
-	m_wndProperties.AddRecord(srcImg, strTrained, strRecognized, fAccuracy);
+	m_wndProperties.AddRecord(srcImg, strTrained, strRecognized, fAccuracy, _id1, _id2);
 }
 
 void CMainFrame::ResetListCtrl()
 {
 	m_wndProperties.ResetListCtrl();
+}
+void CMainFrame::SetPreviewImg(cv::Mat& pimg, CString strInfo)
+{
+	m_wndProperties.SetPreviewImg(pimg, strInfo);
+}
+
+void CMainFrame::SetLayerImgCnt(int clsid, int imgnum)
+{
+	m_wndProperties.SetLayerImgCnt(clsid, imgnum);
 }

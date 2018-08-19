@@ -31,7 +31,7 @@ void CMNDBLayerImage::ReleaseLayerImage()
 	m_vecStrCode.swap(std::vector<wchar_t*>());
 
 	for (auto i = 0; i < m_vecLayerInfo.size(); i++) {
-		m_vecLayerInfo[i].hogFeature.release();
+//		m_vecLayerInfo[i].hogFeature.release();
 	//	delete [] m_vecLayerInfo[i].strcode;
 		m_vecLayerInfo[i].vecPositionId.clear();
 	}
@@ -144,7 +144,9 @@ void CMNDBLayerImage::GenerateFirstLayer(int minstrcode, int resolution)
 	//	cv::HOGDescriptor d(cv::Size(m_hogResolution, m_hogResolution), cv::Size(8, 8), cv::Size(4, 4), cv::Size(4, 4), 9);
 	//	cv::Mat layerImg = cv::Mat::zeros(cv::Size(m_wnum * m_cellSizeW, m_hnum * m_cellSizeH), CV_8U);
 	m_firstlayerImage.release();
-	m_firstlayerImage = cv::Mat::zeros(cv::Size(m_wnum * m_cellSizeW, m_hnum * m_cellSizeH), CV_8U);
+//	m_firstlayerImage = cv::Mat::zeros(cv::Size(m_wnum * m_cellSizeW, m_hnum * m_cellSizeH), CV_8U);
+	m_firstlayerImage = cv::Mat(cv::Size(m_wnum * m_cellSizeW, m_hnum * m_cellSizeH), CV_8U);
+//	m_firstlayerImage.setTo(cv::Scalar(255));
 	std::map<unsigned long, std::vector<unsigned long>>::iterator iter = m_mapStrCode.begin();
 
 	m_firstlayerImageWordNum = 0;
@@ -302,6 +304,10 @@ void CMNDBLayerImage::GenerateFirstLayer(int minstrcode, int resolution)
 
 }
 
+cv::Mat& CMNDBLayerImage::GetLayerImageByID(int id)
+{ 
+	return m_imageDb[id].img; 
+}
 void CMNDBLayerImage::LoadLayerImageFile(CString str)
 {
 //	clock_t begin = clock();
@@ -333,6 +339,9 @@ void CMNDBLayerImage::LoadLayerImageFile(CString str)
 			IsFile = false;		
 
 	} while (IsFile);
+
+	m_imgcnt = m_imageDb.size();
+	pMain->SetLayerImgCnt(0, m_imgcnt);
 
 	//clock_t end = clock();
 	//double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
@@ -469,6 +478,7 @@ _recognitionResult CMNDBLayerImage::GetMatchResultByPixel(cv::Mat& cutImg, _stMa
 	_recognitionResult result;
 	result.accur = 0;
 	result.code = 0;
+
 	for (; iter != mapMatch.end(); iter--) {
 		res.accur[cnt] = (float)iter->first / 10000.0f;
 		res.code[cnt] = m_vecLayerInfo[iter->second].strcode;
@@ -477,6 +487,7 @@ _recognitionResult CMNDBLayerImage::GetMatchResultByPixel(cv::Mat& cutImg, _stMa
 		_recognitionResult temp = DeepMatching(cutImg, (unsigned short)res.code[cnt]);
 		if (temp.accur > result.accur) {
 			result = temp;
+			result.firstlayerIdx = iter->second;
 		}
 
 		cnt++;
@@ -495,6 +506,7 @@ _recognitionResult CMNDBLayerImage::DeepMatching(cv::Mat cutImg, unsigned short 
 	_recognitionResult result;
 	result.accur = 0;
 	result.code = (wchar_t)charcode;
+	result.firstlayerIdx = 0;
 
 	float accurate = 0;
 	int cnt = 0;
@@ -534,35 +546,35 @@ _recognitionResult CMNDBLayerImage::DeepMatching(cv::Mat cutImg, unsigned short 
 
 void CMNDBLayerImage::GetMatchResultByHOG(cv::Mat cutImg, _stMatcResTop5& res)
 {
-	cv::resize(cutImg, cutImg, cv::Size(m_hogResolution, m_hogResolution));
-	cv::HOGDescriptor d(cv::Size(m_hogResolution, m_hogResolution), cv::Size(8, 8), cv::Size(4, 4), cv::Size(4, 4), 9);
-	cv::Mat A = getHOGFeature(d, cutImg);
-
-	float accur = 4096;
-//	int matchIdx = 0;
-	std::map<unsigned long, unsigned long> mapMatch;
-	for (auto i = 0; i < m_vecLayerInfo.size(); i++) {
-		float res = hog_matching(A, m_vecLayerInfo[i].hogFeature);
-		//if (res < accur) {
-		//	accur = res;
-		//	matchIdx = i;
-		//}
-
-		if (res < 2000) {
-			int idx = res * 100;
-			mapMatch[idx] = i;
-		}
-	}
-
-	std::map<unsigned long, unsigned long>::iterator iter = mapMatch.begin();
-	int cnt = 0;
-	for (; iter != mapMatch.end(); iter++) {
-		res.accur[cnt] = (float)iter->first * 0.01f;
-		res.code[cnt] = m_vecLayerInfo[iter->second].strcode;
-		cnt++;
-		if (cnt > 19)
-			break;
-	}
+//	cv::resize(cutImg, cutImg, cv::Size(m_hogResolution, m_hogResolution));
+//	cv::HOGDescriptor d(cv::Size(m_hogResolution, m_hogResolution), cv::Size(8, 8), cv::Size(4, 4), cv::Size(4, 4), 9);
+//	cv::Mat A = getHOGFeature(d, cutImg);
+//
+//	float accur = 4096;
+////	int matchIdx = 0;
+//	std::map<unsigned long, unsigned long> mapMatch;
+//	for (auto i = 0; i < m_vecLayerInfo.size(); i++) {
+//		float res = hog_matching(A, m_vecLayerInfo[i].hogFeature);
+//		//if (res < accur) {
+//		//	accur = res;
+//		//	matchIdx = i;
+//		//}
+//
+//		if (res < 2000) {
+//			int idx = res * 100;
+//			mapMatch[idx] = i;
+//		}
+//	}
+//
+//	std::map<unsigned long, unsigned long>::iterator iter = mapMatch.begin();
+//	int cnt = 0;
+//	for (; iter != mapMatch.end(); iter++) {
+//		res.accur[cnt] = (float)iter->first * 0.01f;
+//		res.code[cnt] = m_vecLayerInfo[iter->second].strcode;
+//		cnt++;
+//		if (cnt > 19)
+//			break;
+//	}
 
 	//if (matchIdx < m_vecLayerInfo.size()) {
 	//	strcode = m_vecLayerInfo[matchIdx].strcode;
