@@ -543,6 +543,8 @@ void CMooNTrainerView::ValidateDBLayer()
 	strLog += L"%";
 	pMain->AddOutputString(strLog, false);
 
+
+	m_pViewImage->ReleaseSelections();
 }
 
 
@@ -576,12 +578,12 @@ int CMooNTrainerView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		//	m_pImageView->Create(NULL, NULL, WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE, cRect, this, 0x01);
 		m_pViewImage->Create(NULL, NULL, WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE, cRect, this, 0x01);
 		
-		cv::Mat bgimg = cv::imread("./img/bg.png");
-		cv::resize(bgimg, bgimg, cv::Size(1024, 1024));
-		
-		cv::cvtColor(bgimg, bgimg, CV_BGR2RGB);
-		m_pViewImage->InitGLview(0, 0, bgimg);
-		bgimg.release();
+		//cv::Mat bgimg = cv::imread("./img/bg.png");
+		//cv::resize(bgimg, bgimg, cv::Size(1024, 1024));		
+		//cv::cvtColor(bgimg, bgimg, CV_BGR2RGB);
+
+		m_pViewImage->InitGLview(0, 0);
+		//bgimg.release();
 
 	}
 

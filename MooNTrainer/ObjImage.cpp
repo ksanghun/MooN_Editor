@@ -82,20 +82,20 @@ void CObjImage::Draw()
 	glEnd();
 
 	// Draw Sel Rect //
-	glLineWidth(2);
-	glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-	glBegin(GL_LINE_STRIP);
-	glVertex3f(m_vSelRect[0].x, m_vSelRect[0].y, m_vSelRect[0].z);
-	glVertex3f(m_vSelRect[1].x, m_vSelRect[1].y, m_vSelRect[1].z);
-	glVertex3f(m_vSelRect[2].x, m_vSelRect[2].y, m_vSelRect[2].z);
-	glVertex3f(m_vSelRect[3].x, m_vSelRect[3].y, m_vSelRect[3].z);
-	glVertex3f(m_vSelRect[0].x, m_vSelRect[0].y, m_vSelRect[0].z);
-	glEnd();
-	glLineWidth(1);
-
+	if (m_bIsSelRect) {
+		glLineWidth(2);
+		glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(m_vSelRect[0].x, m_vSelRect[0].y, m_vSelRect[0].z);
+		glVertex3f(m_vSelRect[1].x, m_vSelRect[1].y, m_vSelRect[1].z);
+		glVertex3f(m_vSelRect[2].x, m_vSelRect[2].y, m_vSelRect[2].z);
+		glVertex3f(m_vSelRect[3].x, m_vSelRect[3].y, m_vSelRect[3].z);
+		glVertex3f(m_vSelRect[0].x, m_vSelRect[0].y, m_vSelRect[0].z);
+		glEnd();
+		glLineWidth(1);
+	}
 
 	glPopMatrix();
-
 }
 
 void CObjImage::DrawForPicking()

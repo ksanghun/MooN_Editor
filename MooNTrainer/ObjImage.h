@@ -17,6 +17,7 @@ public:
 
 	POINT3D GetGlobalSelectPos();
 	bool IsSelRect() { return m_bIsSelRect; }
+	void SetSelRect(bool _issell) { m_bIsSelRect = _issell; }
 
 private:
 	GLuint m_texId;

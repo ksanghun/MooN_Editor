@@ -10,7 +10,7 @@ public:
 	CGLVIEW();
 	~CGLVIEW();
 
-	void InitGLview(int _nWidth, int _nHeight, cv::Mat& bgimg);
+	void InitGLview(int _nWidth, int _nHeight);
 	void MouseWheel(short zDelta);
 
 	void Render();
@@ -24,7 +24,7 @@ public:
 	void SetMasterImageSelection(int _wid, int wnum, int hnum);
 	void SetSubImageSelection(int _wid, int wnum, int hnum);
 	int SelectObject3D(int x, int y, int rect_width, int rect_height, int selmode);
-
+	void ReleaseSelections();
 private:
 	CPoint m_mousedown;
 	CPoint m_preMmousedown;

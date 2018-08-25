@@ -28,7 +28,7 @@ BEGIN_MESSAGE_MAP(CGLVIEW, COGLWnd)
 END_MESSAGE_MAP()
 
 
-void CGLVIEW::InitGLview(int _nWidth, int _nHeight, cv::Mat& bgimg)
+void CGLVIEW::InitGLview(int _nWidth, int _nHeight)
 {
 	mtSetPoint3D(&m_lookAt, 0, 0, 0);
 	m_cameraPri.SetInitLevelHeight(MAX_CAM_HIGHTLEVEL * 2);
@@ -38,7 +38,7 @@ void CGLVIEW::InitGLview(int _nWidth, int _nHeight, cv::Mat& bgimg)
 	//	SINGLETON_DataMng::GetInstance()->Test();
 	glInitNames();
 	m_renderlist = glGenLists(1);
-	m_bgTexId = SetMatTexture(bgimg);
+//	m_bgTexId = SetMatTexture(bgimg);
 }
 
 void CGLVIEW::Render()
@@ -154,7 +154,8 @@ void CGLVIEW::SetSubLayer(cv::Mat& img, int xid, int yid)
 {
 	GLuint tid = SetMatTexture(img);
 
-	int xpos = ((MASTER_LAYER_SIZE / 2) + SUB_LAYER_SIZE / 2) + xid*(SUB_LAYER_SIZE + 10)+10;
+//	int xpos = ((MASTER_LAYER_SIZE / 2) + SUB_LAYER_SIZE / 2) + xid*(SUB_LAYER_SIZE + 10)+10;
+	int xpos = (MASTER_LAYER_SIZE / 2) + xid*(SUB_LAYER_SIZE + 10);
 	int ypos = (MASTER_LAYER_SIZE / 2) - yid*(SUB_LAYER_SIZE + 10);
 
 
@@ -175,6 +176,15 @@ void CGLVIEW::SetMasterImageSelection(int _wid, int wnum, int hnum)
 	m_masterImage.SetSelectionRect(xpos, ypos, _UNIT_RESOLOTION_W, _UNIT_RESOLOTION_W);
 }
 
+void CGLVIEW::ReleaseSelections()
+{
+	//	m_masterImage.SetSelectionRect(rect.x, rect.y, rect.width, rect.height);
+	m_masterImage.SetSelRect(false);
+	for(auto i=0; i<m_vecSubLayer.size(); i++)
+		m_vecSubLayer[i].SetSelRect(false);
+}
+
+
 void CGLVIEW::SetSubImageSelection(int _wid, int wnum, int hnum)
 {
 	int totalnum = wnum*hnum;
@@ -184,6 +194,8 @@ void CGLVIEW::SetSubImageSelection(int _wid, int wnum, int hnum)
 		int xpos = (wordId % wnum)*_UNIT_RESOLOTION_W;
 		int ypos = (wordId / hnum)*_UNIT_RESOLOTION_W;
 		m_vecSubLayer[imgidx].SetSelectionRect(xpos, ypos, _UNIT_RESOLOTION_W, _UNIT_RESOLOTION_W);
+		if (imgidx > 0)
+			m_vecSubLayer[imgidx - 1].SetSelRect(false);
 	}	
 }
 
