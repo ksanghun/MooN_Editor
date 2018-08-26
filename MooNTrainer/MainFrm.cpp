@@ -29,6 +29,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_SETTINGCHANGE()
 	ON_COMMAND(ID_FILE_OPEN, &CMainFrame::OnFileOpen)
 	ON_COMMAND(ID_TOOL_VALI_DB, &CMainFrame::OnToolValiDb)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -48,6 +49,7 @@ CMainFrame::CMainFrame()
 	pMain = this;
 
 	m_strInitPath = "";
+	m_bIsCreated = false;
 }
 
 CMainFrame::~CMainFrame()
@@ -220,6 +222,9 @@ BOOL CMainFrame::CreateDockingWindows()
 	//}
 
 	// Create output window
+
+	DWORD dwNoCloseBarStyle = AFX_DEFAULT_DOCKING_PANE_STYLE & ~AFX_CBRS_CLOSE & ~AFX_CBRS_AUTOHIDE & ~AFX_CBRS_RESIZE & ~AFX_CBRS_FLOAT;
+
 	CString strOutputWnd;
 	bNameValid = strOutputWnd.LoadString(IDS_OUTPUT_WND);
 	ASSERT(bNameValid);
@@ -229,11 +234,14 @@ BOOL CMainFrame::CreateDockingWindows()
 		return FALSE; // failed to create
 	}
 
-	if (!m_wndProperties.Create(L"", this, CRect(0, 0, 500, 500), TRUE, ID_VIEW_PROPERTIESWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT))
+	if (!m_wndProperties.Create(L"", this, CRect(0, 0, 300, 500), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT, AFX_CBRS_REGULAR_TABS, dwNoCloseBarStyle))
 	{
 		TRACE0("Failed to create Properties window\n");
 		return FALSE; // failed to create
 	}
+
+//	m_wndProperties.SetMinSize(CSize(500, 400));
+	m_wndProperties.SetResizeMode(FALSE);
 
 	// Create properties window
 	//CString strPropertiesWnd;
@@ -246,6 +254,8 @@ BOOL CMainFrame::CreateDockingWindows()
 	//}
 
 	SetDockingWindowIcons(theApp.m_bHiColorIcons);
+
+	m_bIsCreated = true;
 	return TRUE;
 }
 
@@ -537,21 +547,32 @@ void CMainFrame::SaveUserData()
 }
 
 
-void CMainFrame::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2)
+void CMainFrame::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2, int _listType)
 {
-	m_wndProperties.AddRecord(srcImg, strTrained, strRecognized, fAccuracy, _id1, _id2);
+	m_wndProperties.AddRecord(srcImg, strTrained, strRecognized, fAccuracy, _id1, _id2, _listType);
 }
 
-void CMainFrame::ResetListCtrl()
+void CMainFrame::ResetListCtrl(int listid)
 {
-	m_wndProperties.ResetListCtrl();
+	m_wndProperties.ResetListCtrl(listid);
 }
-void CMainFrame::SetPreviewImg(cv::Mat& pimg, CString strInfo)
+void CMainFrame::SetPreviewImg(cv::Mat& pimg, CString strInfo, int _type)
 {
-	m_wndProperties.SetPreviewImg(pimg, strInfo);
+	m_wndProperties.SetPreviewImg(pimg, strInfo, _type);
 }
 
 void CMainFrame::SetLayerImgCnt(int clsid, int imgnum)
 {
 	m_wndProperties.SetLayerImgCnt(clsid, imgnum);
+}
+
+void CMainFrame::OnSize(UINT nType, int cx, int cy)
+{
+	CFrameWndEx::OnSize(nType, cx, cy);
+
+	// TODO: Add your message handler code here
+	if(m_bIsCreated)
+		m_wndProperties.SetWindowPos(NULL, 0, 0, 300, cy, SWP_NOZORDER);
+
+
 }

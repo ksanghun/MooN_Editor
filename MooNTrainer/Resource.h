@@ -89,8 +89,11 @@
 #define IDC_STATIC_PREVIEW              1005
 #define IDC_STATIC_INFO                 1006
 #define IDC_COMBO_IMGLIST               1007
-#define IDC_LIST1                       1008
+#define IDC_STATIC_INFO2                1007
+#define IDC_STATIC_VALI                 1007
 #define IDC_LIST_VALI                   1008
+#define IDC_BUTTON1                     1009
+#define IDC_TAB_LIST                    1010
 #define ID_TOOL_VALI_DB                 32771
 #define ID_TEST_OPENPROJECT             32772
 
@@ -100,7 +103,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1009
+#define _APS_NEXT_CONTROL_VALUE         1011
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

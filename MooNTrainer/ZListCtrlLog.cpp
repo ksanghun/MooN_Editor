@@ -93,7 +93,7 @@ END_MESSAGE_MAP()
 // CZListCtrlLog message handlers
 void CZListCtrlLog::InitListCtrl()
 {
-	m_Edit.Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL , CRect(0, 0, 800, 500), this, NULL);
+	m_Edit.Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL , CRect(0, 0, 50, 100), this, NULL);
 	m_Edit.ShowWindow(SW_HIDE);	
 
 	m_Font.CreateFont(30,                // Height
@@ -156,17 +156,20 @@ void CZListCtrlLog::UpdateCodeValue()
 		m_Edit.GetWindowText(str);	
 
 		// Update all rows===========================//
-		if (m_bIsAutoFill) {
-			for (int row = 0; row < GetItemCount(); ++row)
-			{
-				if (GetItemText(row, 3) == m_strSearchId) {
-					SetItem(row, 1, LVIF_TEXT, str, 0, 0, 0, NULL);
-				}
-			}
-		}
-		else {
+		//if (m_bIsAutoFill) {
+		//	for (int row = 0; row < GetItemCount(); ++row)
+		//	{
+		//		if (GetItemText(row, 3) == m_strSearchId) {
+		//			SetItem(row, 1, LVIF_TEXT, str, 0, 0, 0, NULL);
+		//		}
+		//	}
+		//}
+		//else {
+		if (GetItemText(m_selItem, 1) != str) {
 			SetItem(m_selItem, 1, LVIF_TEXT, str, 0, 0, 0, NULL);
+			SetItem(m_selItem, 7, LVIF_TEXT, L"1", 0, 0, 0, NULL);
 		}
+		//}
 		//===========================================//
 
 		//m_selItem = -1;
@@ -193,32 +196,36 @@ BOOL CZListCtrlLog::PreTranslateMessage(MSG* pMsg)
 			int listcnt = GetItemCount();
 			int sid = _wtoi(GetItemText(m_selItem, 3));
 
-			if (m_bIsAutoFill) {
-				while (m_selItem < (listcnt - 1)) {
-					m_selItem++;
-					int nextId = _wtoi(GetItemText(m_selItem, 3));
-					if (sid != nextId) {
-						break;
-					}
-				}
+			//if (m_bIsAutoFill) {
+			//	while (m_selItem < (listcnt - 1)) {
+			//		m_selItem++;
+			//		int nextId = _wtoi(GetItemText(m_selItem, 3));
+			//		if (sid != nextId) {
+			//			break;
+			//		}
+			//	}
+			//}
+			//else {
+				m_selItem++;
+			//}
+
+			int moveid = m_selItem;
+			if (moveid >= listcnt) {
+				//	moveid = listcnt - 1;
+				SetItemState(m_selItem, 0);
+				m_Edit.ShowWindow(SW_HIDE);
 			}
 			else {
-				m_selItem++;
+				EnsureVisible(moveid, TRUE);
+				SetItemState(m_selItem, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 			}
-
-			int moveid = m_selItem + 5;
-			if (moveid >= listcnt)
-				moveid = listcnt - 1;
-
-			EnsureVisible(moveid, TRUE);
-			SetItemState(m_selItem, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 			//	SetFocus();
 			//EnsureVisible(m_selItem + 10, TRUE);
 
 
 
 
-			//Retrieve the text of the selected subItem from the list
+			////Retrieve the text of the selected subItem from the list
 			//Invalidate();
 			//HWND hWnd1 = GetSafeHwnd();
 			//CString str = GetItemText(nItem, nSubItem);
@@ -275,8 +282,8 @@ void CZListCtrlLog::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		// We'll cycle the colors through red, green, and light blue.
 
 		int itemid = (int)(pNMCD->nmcd).dwItemSpec; //this is item id
-		int sid = _wtoi(GetItemText(itemid, 3));
-		int confi = _wtoi(GetItemText(itemid, 3));
+	//	int sid = _wtoi(GetItemText(itemid, 3));
+		int isEdit = _wtoi(GetItemText(itemid, 7));
 
 		//if (confi > 75)
 		//	pNMCD->clrText = RGB(0, 0, 255);
@@ -309,21 +316,13 @@ void CZListCtrlLog::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
 		//	m_colorid++;
 		//}
 
-		if (m_colorid % 2 == 0) {
-			if (confi < 75) 		pNMCD->clrText = RGB(255, 0, 0);
-			else					pNMCD->clrText = RGB(0, 0, 0);
-
-		//	pNMCD->clrTextBk = RGB(200, 200, 200);
-		}
-		else {
-			if (confi < 75) 		pNMCD->clrText = RGB(255, 0, 0);
-			else					pNMCD->clrText = RGB(0, 0, 0);
-
-		//	pNMCD->clrTextBk = RGB(250, 250, 250);
-		}
-
-		pNMCD->clrTextBk = RGB(250, 250, 250);
+		if (isEdit == 1)
+			pNMCD->clrText = RGB(255, 0, 0);
+		else
+			pNMCD->clrText = RGB(0, 0, 0);
 		
+
+		pNMCD->clrTextBk = RGB(250, 250, 250);	
 
 
 		// Tell Windows to paint the control itself.

@@ -71,7 +71,6 @@ BOOL CMooNTrainerApp::InitInstance()
 
 	CWinAppEx::InitInstance();
 
-
 	EnableTaskbarInteraction(FALSE);
 
 	// AfxInitRichEdit2() is required to use RichEdit control	

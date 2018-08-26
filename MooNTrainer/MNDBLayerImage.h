@@ -63,6 +63,8 @@ public:
 	int GetCodeNum() { return m_totalCodeNum; }
 	std::vector<_stLayerInfo>* GetFirstLayerInfo() { return &m_vecLayerInfo; }
 
+	void UpdateDBCode(int id, wchar_t code);
+
 private:
 
 	int m_classId;
@@ -75,7 +77,7 @@ private:
 	unsigned short m_wnum, m_hnum, m_strcodeLen;	
 	std::vector<_dbMat> m_imageDb;
 	std::vector<wchar_t*> m_vecStrCode;
-	
+	CString m_strPatJp3;
 
 	cv::Mat m_firstlayerImage;
 	int m_firstlayerImageWordNum;
@@ -84,6 +86,7 @@ private:
 
 	void ReleaseLayerImage();
 	void LoadJP3File(CString str);
+	void WriteJP3File(CString str);
 	void LoadLayerImageFile(CString str);	
 	cv::Mat getWordCutImg(int wordId, int cellSize, cv::Mat& clsImg, int clsId, int wNum, int hNum);
 	cv::Rect getPositionByIndex(int wordId, int cellSize, int clsId, int wNum, int hNum);

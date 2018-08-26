@@ -12,6 +12,12 @@
 // CFormViewEditDB form view
 #define _LIST_ICON_SIZE 32
 
+struct _stListItemForEditing {
+	int mid;
+	int wid;
+	wchar_t code;
+};
+
 class CFormViewEditDB : public CFormView
 {
 	DECLARE_DYNCREATE(CFormViewEditDB)
@@ -44,8 +50,6 @@ private:
 	int m_nRecordNumVali;
 	int m_imgListIdVali;
 
-	
-
 
 
 protected:
@@ -60,14 +64,16 @@ public:
 
 
 
-	void ResetLogList();
-	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2);
+	void ResetLogList(int listid);
+	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2, int _listType);
 	CBitmap* GetLogCBitmap(cv::Mat& pimg);
-	void SetPreviewImg(cv::Mat& pimg, CString strInfo);
+	void SetPreviewImg(cv::Mat& pimg, CString strInfo, int _type);
 	void SetLayerImgCnt(int clsid, int imgnum);
 
 	CString m_staticPreviewInfo;
-	
+	CTabCtrl m_ctrlTab;
+	afx_msg void OnTcnSelchangeTabList(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedButton1();
 };
 
 

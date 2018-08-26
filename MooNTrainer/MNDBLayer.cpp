@@ -118,3 +118,8 @@ _stLayerImgInfo CMNDBLayer::GetLayerImgInfo(int clsid)
 	info.codelen = _C1_CODE_LEN;
 	return info;
 }
+
+void CMNDBLayer::UpdateDBCode(int clsid, int id, wchar_t code)
+{
+	m_layerImage[clsid].UpdateDBCode(id, code);
+}

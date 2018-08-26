@@ -313,7 +313,7 @@ void CMooNTrainerView::SelectCellMaster(CPoint point, bool IsAddList)
 				//pMain->AddOutputString(strLog, false);
 				cv::Mat cutimg = m_dbLayerMasterImg(m_selRect).clone();
 				//	cv::imshow("cut", cutimg);
-				pMain->SetPreviewImg(cutimg, strLog);
+				pMain->SetPreviewImg(cutimg, strLog, 0);
 				
 				if (m_pViewImage) {
 				//	m_pViewImage->SetMasterImageSelection(m_selRect);
@@ -321,12 +321,12 @@ void CMooNTrainerView::SelectCellMaster(CPoint point, bool IsAddList)
 				}
 
 				if (IsAddList) {
-					pMain->ResetListCtrl();
+					pMain->ResetListCtrl(0);
 					for (int k = 0; k < m_pVecLayerInfo->at(m_selCellId).vecPositionId.size(); k++) {
 						int charid = m_pVecLayerInfo->at(m_selCellId).vecPositionId[k];
 						wchar_t strgt;
 						cv::Mat cut = m_dbLayer.GetCutImagebyWorkPos(0, charid, strgt);
-						pMain->AddRecord(cut, strgt, '-', 0, m_selCellId, charid);
+						pMain->AddRecord(cut, strgt, '-', 0, m_selCellId, charid, 0);
 					}
 				}
 			}
@@ -412,7 +412,7 @@ void CMooNTrainerView::OnTimer(UINT_PTR nIDEvent)
 
 void CMooNTrainerView::ValidateDBLayer()
 {
-	pMain->ResetListCtrl();
+	pMain->ResetListCtrl(1);
 
 	_stMatcResTop5 res;
 
@@ -480,7 +480,7 @@ void CMooNTrainerView::ValidateDBLayer()
 		if (ismatch == false) {
 			strLog.Format(L"%d: Not matched... %s-%s - %3.2f\n", i, (CString)strgt, (CString)topRes.code, topRes.accur);
 			pMain->AddOutputString(strLog, false);
-			pMain->AddRecord(cut, strgt, topRes.code, topRes.accur, topRes.firstlayerIdx, i);
+			pMain->AddRecord(cut, strgt, topRes.code, topRes.accur, topRes.firstlayerIdx, i, 1);
 			
 			strLog.Format(L"Processing...	(%d/%d)", i, num - 1);
 			pMain->AddOutputString(strLog, false);
@@ -547,8 +547,8 @@ void CMooNTrainerView::ValidateDBLayer()
 
 	int mismatch = totalnum - matchcnt;
 	strLog.Format(L"***Validation result***\nMismatched: %d \nPrecison: %3.2f%s (%d/%d)", mismatch, precision, L"%", mismatch, totalnum);
-	cv::Mat img = cv::Mat(32, 32, CV_8UC1, cv::Scalar(255));
-	pMain->SetPreviewImg(img, strLog);
+	cv::Mat img;
+	pMain->SetPreviewImg(img, strLog, 1);
 
 
 	m_pViewImage->ReleaseSelections();
@@ -616,4 +616,9 @@ BOOL CMooNTrainerView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		m_pViewImage->MouseWheel(zDelta);
 	}
 	return CView::OnMouseWheel(nFlags, zDelta, pt);
+}
+
+void CMooNTrainerView::UpdateDBCode(int clsid, int id, wchar_t code)
+{
+	m_dbLayer.UpdateDBCode(clsid, id, code);
 }

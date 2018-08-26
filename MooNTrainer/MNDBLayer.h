@@ -30,6 +30,8 @@ public:
 	int GetTotalCodeNum(int clsid);
 	std::vector<_stLayerInfo>* GetMasterImageInfo(int clsid); 
 	_stLayerImgInfo GetLayerImgInfo(int clsid);
+
+	void UpdateDBCode(int clsid, int id, wchar_t code);
 private:
 
 	CMNDBLayerImage m_layerImage[8];	

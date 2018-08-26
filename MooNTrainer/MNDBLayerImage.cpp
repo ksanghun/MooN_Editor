@@ -348,16 +348,32 @@ void CMNDBLayerImage::LoadLayerImageFile(CString str)
 	//TRACE("Elapsed Time (LoadLayerImageFile) : %3.2f\n", (float)elapsed_secs);
 }
 
+void CMNDBLayerImage::UpdateDBCode(int id, wchar_t code)
+{
+	if ((id>=0) && (id < m_vecStrCode.size())) {
+		delete [] m_vecStrCode[id];
+		wchar_t* ncode = new wchar_t[_C1_CODE_LEN];
+		memset(ncode, 0x00, sizeof(wchar_t)*_C1_CODE_LEN);
+		memcpy(ncode, &code, sizeof(wchar_t));
+		m_vecStrCode[id] = ncode;
+	}
+
+	if (id == -1) { // Save File
+		WriteJP3File(m_strPatJp3);
+//		GenerateFirstLayer(0, m_layerResolution);
+	}
+}
+
 void CMNDBLayerImage::LoadJP3File(CString str)
 {
-	clock_t begin = clock();
+//	clock_t begin = clock();
 //	m_vecStrCode.swap(std::vector<wchar_t*>());
 	for (auto i = 0; i < m_vecStrCode.size(); i++) {
 		delete[] m_vecStrCode[i];
 	}
 	m_vecStrCode.swap(std::vector<wchar_t*>());
 
-
+	m_strPatJp3 = str;
 	USES_CONVERSION;
 	char* sz = 0;
 	sz = T2A(str);
@@ -380,12 +396,30 @@ void CMNDBLayerImage::LoadJP3File(CString str)
 		}
 		fclose(fp);
 	}
-
-	clock_t end = clock();
-	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-	TRACE("Elapsed Time (LoadJP3File) : %3.2f\n", (float)elapsed_secs);
+//	clock_t end = clock();
+//	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+//	TRACE("Elapsed Time (LoadJP3File) : %3.2f\n", (float)elapsed_secs);
 }
 
+void CMNDBLayerImage::WriteJP3File(CString str)
+{
+	USES_CONVERSION;
+	char* sz = 0;
+	sz = T2A(str);
+
+	FILE* fp = 0;
+	fopen_s(&fp, sz, "wb");
+	if (fp) {
+		int num = m_vecStrCode.size();
+		int clen = m_strcodeLen;
+		fwrite(&num, sizeof(int), 1, fp);
+		fwrite(&clen, sizeof(int), 1, fp);
+		for (int i = 0; i < num; i++) {
+			fwrite(m_vecStrCode[i], sizeof(wchar_t)*m_strcodeLen, 1, fp);
+		}
+		fclose(fp);
+	}
+}
 
 cv::Mat CMNDBLayerImage::FitBoundingBox(cv::Mat img)
 {
@@ -485,6 +519,13 @@ _recognitionResult CMNDBLayerImage::GetMatchResultByPixel(cv::Mat& cutImg, _stMa
 
 		// Get Top 1 //
 		_recognitionResult temp = DeepMatching(cutImg, (unsigned short)res.code[cnt]);
+
+		// To avoid 1 trained sample //
+		if (temp.accur == 1.0) {
+			temp.accur -= 0.2f;
+		}
+
+
 		if (temp.accur > result.accur) {
 			result = temp;
 			result.firstlayerIdx = iter->second;

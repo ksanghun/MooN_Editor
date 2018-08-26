@@ -1,6 +1,8 @@
 #pragma once
 #include "ZEdit.h"
 
+
+
 // CZListCtrlLog
 #define MSG_POST_SUBCLASS_LISTVIEW (WM_APP+50)
 

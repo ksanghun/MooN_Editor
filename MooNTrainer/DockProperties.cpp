@@ -39,6 +39,7 @@ void CDockProperties::OnSize(UINT nType, int cx, int cy)
 	// TODO: Add your message handler code here
 	if (m_pProperties)
 		m_pProperties->SetWindowPos(NULL, 0, 0, cx, cy, SWP_NOZORDER);
+
 }
 
 
@@ -105,24 +106,24 @@ void CDockProperties::SetEncodedFilePath(CString strPath)
 	//}
 }
 
-void CDockProperties::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognizede, float fAccuracy, int _id1, int _id2)
+void CDockProperties::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognizede, float fAccuracy, int _id1, int _id2, int _listType)
 {
 	if (m_pProperties) {
-		m_pProperties->AddRecord(srcImg, strTrained, strRecognizede, fAccuracy, _id1, _id2);
+		m_pProperties->AddRecord(srcImg, strTrained, strRecognizede, fAccuracy, _id1, _id2, _listType);
 	}
 }
 
-void CDockProperties::ResetListCtrl()
+void CDockProperties::ResetListCtrl(int listid)
 {
 	if (m_pProperties) {
-		m_pProperties->ResetLogList();
+		m_pProperties->ResetLogList(listid);
 	}
 }
 
-void CDockProperties::SetPreviewImg(cv::Mat& pimg, CString strInfo)
+void CDockProperties::SetPreviewImg(cv::Mat& pimg, CString strInfo, int _type)
 {
 	if (m_pProperties) {
-		m_pProperties->SetPreviewImg(pimg, strInfo);
+		m_pProperties->SetPreviewImg(pimg, strInfo, _type);
 	}
 }
 

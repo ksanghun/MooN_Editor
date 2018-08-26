@@ -42,6 +42,7 @@ protected:  // control bar embedded members
 	COutputWnd        m_wndOutput;
 	CDockProperties	  m_wndProperties;
 	CString			  m_strInitPath;
+	bool				m_bIsCreated;
 
 // Generated message map functions
 protected:
@@ -62,10 +63,11 @@ public:
 	afx_msg void OnFileOpen();
 	afx_msg void OnToolValiDb();
 
-	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2);
-	void ResetListCtrl();
-	void SetPreviewImg(cv::Mat& pimg, CString strInfo);
+	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2, int _listType);
+	void ResetListCtrl(int listid);
+	void SetPreviewImg(cv::Mat& pimg, CString strInfo, int _type);
 	void SetLayerImgCnt(int clsid, int imgnum);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 
