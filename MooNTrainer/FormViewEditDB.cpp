@@ -27,6 +27,7 @@ void CFormViewEditDB::DoDataExchange(CDataExchange* pDX)
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_RESULT, m_listCtrl);
 	DDX_Text(pDX, IDC_STATIC_INFO, m_staticPreviewInfo);
+	DDX_Control(pDX, IDC_LIST_VALI, m_listCtrlVali);
 }
 
 BEGIN_MESSAGE_MAP(CFormViewEditDB, CFormView)
@@ -79,7 +80,8 @@ void CFormViewEditDB::OnSize(UINT nType, int cx, int cy)
 	// TODO: Add your message handler code here
 	if (m_bIsCreated) {
 //		m_listCtrl.MoveWindow(10, 120, cx - 220, cy - 120);
-		m_listCtrl.MoveWindow(10, 120, cx - 10, cy - 120);
+		m_listCtrl.MoveWindow(270, 120, cx - 230, cy - 120);
+		m_listCtrlVali.MoveWindow(10, 120, cx - 250, cy - 120);
 	}
 }
 
@@ -96,8 +98,9 @@ void CFormViewEditDB::OnInitialUpdate()
 	int w = r.right - r.left;
 	int h = r.bottom - r.top;
 //	m_listCtrl.MoveWindow(10, 120, w-220, h-120);
-	m_listCtrl.MoveWindow(10, 120, w - 10, h - 120);
-	
+
+//=======================================================//
+	m_listCtrl.MoveWindow(270, 120, w - 230, h - 120);	
 
 	m_listCtrl.EnableScrollBarCtrl(SB_HORZ);
 	m_listCtrl.ShowScrollBar(SB_HORZ);
@@ -105,10 +108,10 @@ void CFormViewEditDB::OnInitialUpdate()
 	m_listCtrl.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
 
 	m_listCtrl.InitListCtrl();
-	m_listCtrl.AddUserColumn(L"Cut Image", _LIST_ICON_SIZE+5);
-	m_listCtrl.AddUserColumn(L"Trained", 70);
-	m_listCtrl.AddUserColumn(L"Recognized", 70);
-	m_listCtrl.AddUserColumn(L"Accuracy", 70);
+	m_listCtrl.AddUserColumn(L"Img", _LIST_ICON_SIZE+5);
+	m_listCtrl.AddUserColumn(L"Trained", 100);
+	m_listCtrl.AddUserColumn(L"Recognized", 100);
+	m_listCtrl.AddUserColumn(L"Accuracy", 0);
 	m_listCtrl.AddUserColumn(L"ID1", 0);
 	m_listCtrl.AddUserColumn(L"ID2", 0);
 
@@ -120,6 +123,35 @@ void CFormViewEditDB::OnInitialUpdate()
 
 	m_nRecordNum = 0;
 	m_imgListId = 0;
+//============================================================//
+
+
+//=======================================================//
+	m_listCtrlVali.MoveWindow(10, 120, w - 250, h - 120);
+
+	m_listCtrlVali.EnableScrollBarCtrl(SB_HORZ);
+	m_listCtrlVali.ShowScrollBar(SB_HORZ);
+	m_listCtrlVali.SetScrollRange(SB_HORZ, 0, 2000);
+	m_listCtrlVali.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER);
+
+	m_listCtrlVali.InitListCtrl();
+	m_listCtrlVali.AddUserColumn(L"Img", _LIST_ICON_SIZE + 5);
+	m_listCtrlVali.AddUserColumn(L"Trained", 70);
+	m_listCtrlVali.AddUserColumn(L"Recognized", 70);
+	m_listCtrlVali.AddUserColumn(L"Accuracy", 70);
+	m_listCtrlVali.AddUserColumn(L"ID1", 0);
+	m_listCtrlVali.AddUserColumn(L"ID2", 0);
+
+
+	//UINT nFlags = ILC_MASK;
+	//nFlags |= (theApp.m_bHiColorIcons) ? ILC_COLOR24 : ILC_COLOR4;
+	m_imgListVali.Create(_LIST_ICON_SIZE, _LIST_ICON_SIZE, nFlags, 0, 0);
+	m_listCtrlVali.SetImageList(&m_imgList, LVSIL_SMALL);
+
+	m_nRecordNumVali = 0;
+	m_imgListIdVali = 0;
+	//============================================================//
+
 }
 
 void CFormViewEditDB::ResetLogList()

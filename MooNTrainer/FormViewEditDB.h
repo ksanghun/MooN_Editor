@@ -39,6 +39,13 @@ private:
 	int m_nRecordNum;
 	int m_imgListId;
 
+	CZListCtrlLog m_listCtrlVali;
+	CImageList m_imgListVali;
+	int m_nRecordNumVali;
+	int m_imgListIdVali;
+
+	
+
 
 
 protected:
@@ -60,6 +67,7 @@ public:
 	void SetLayerImgCnt(int clsid, int imgnum);
 
 	CString m_staticPreviewInfo;
+	
 };
 
 

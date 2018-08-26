@@ -229,7 +229,7 @@ BOOL CMainFrame::CreateDockingWindows()
 		return FALSE; // failed to create
 	}
 
-	if (!m_wndProperties.Create(L"", this, CRect(0, 0, 300, 300), TRUE, ID_VIEW_PROPERTIESWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT))
+	if (!m_wndProperties.Create(L"", this, CRect(0, 0, 500, 500), TRUE, ID_VIEW_PROPERTIESWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT))
 	{
 		TRACE0("Failed to create Properties window\n");
 		return FALSE; // failed to create
