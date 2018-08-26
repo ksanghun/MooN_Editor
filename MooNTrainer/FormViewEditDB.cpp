@@ -27,13 +27,11 @@ void CFormViewEditDB::DoDataExchange(CDataExchange* pDX)
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_RESULT, m_listCtrl);
 	DDX_Text(pDX, IDC_STATIC_INFO, m_staticPreviewInfo);
-	DDX_Control(pDX, IDC_COMBO_IMGLIST, m_comboImgList);
 }
 
 BEGIN_MESSAGE_MAP(CFormViewEditDB, CFormView)
 
 	ON_WM_SIZE()
-	ON_CBN_SELCHANGE(IDC_COMBO_IMGLIST, &CFormViewEditDB::OnCbnSelchangeComboImglist)
 END_MESSAGE_MAP()
 
 
@@ -80,7 +78,8 @@ void CFormViewEditDB::OnSize(UINT nType, int cx, int cy)
 
 	// TODO: Add your message handler code here
 	if (m_bIsCreated) {
-		m_listCtrl.MoveWindow(10, 120, cx - 20, cy - 130);
+//		m_listCtrl.MoveWindow(10, 120, cx - 220, cy - 120);
+		m_listCtrl.MoveWindow(10, 120, cx - 10, cy - 120);
 	}
 }
 
@@ -96,7 +95,8 @@ void CFormViewEditDB::OnInitialUpdate()
 	m_bIsCreated = true;
 	int w = r.right - r.left;
 	int h = r.bottom - r.top;
-	m_listCtrl.MoveWindow(10, 150, w-20, h-160);
+//	m_listCtrl.MoveWindow(10, 120, w-220, h-120);
+	m_listCtrl.MoveWindow(10, 120, w - 10, h - 120);
 	
 
 	m_listCtrl.EnableScrollBarCtrl(SB_HORZ);
@@ -108,9 +108,9 @@ void CFormViewEditDB::OnInitialUpdate()
 	m_listCtrl.AddUserColumn(L"Cut Image", _LIST_ICON_SIZE+5);
 	m_listCtrl.AddUserColumn(L"Trained", 70);
 	m_listCtrl.AddUserColumn(L"Recognized", 70);
-	m_listCtrl.AddUserColumn(L"Accuracy", 50);
-	m_listCtrl.AddUserColumn(L"ID1", 50);
-	m_listCtrl.AddUserColumn(L"ID2", 50);
+	m_listCtrl.AddUserColumn(L"Accuracy", 70);
+	m_listCtrl.AddUserColumn(L"ID1", 0);
+	m_listCtrl.AddUserColumn(L"ID2", 0);
 
 
 	UINT nFlags = ILC_MASK;
@@ -134,16 +134,16 @@ void CFormViewEditDB::ResetLogList()
 
 void CFormViewEditDB::SetLayerImgCnt(int clsid, int imgnum)
 {
-	CString strFile;
-	m_comboImgList.Clear();
+	//CString strFile;
+	//m_comboImgList.Clear();
 
-	strFile.Format(L"Trained Layer", clsid);
-	m_comboImgList.AddString(strFile);
-	for (int i = 0; i < imgnum; i++) {
-		strFile.Format(L"Class_%02d_%02d Sublayer", clsid, i);
-		m_comboImgList.AddString(strFile);
-	}
-	m_comboImgList.SetCurSel(0);
+	//strFile.Format(L"Trained Layer", clsid);
+	//m_comboImgList.AddString(strFile);
+	//for (int i = 0; i < imgnum; i++) {
+	//	strFile.Format(L"Class_%02d_%02d Sublayer", clsid, i);
+	//	m_comboImgList.AddString(strFile);
+	//}
+	//m_comboImgList.SetCurSel(0);
 //	UpdateData(FALSE);
 }
 
@@ -296,10 +296,10 @@ void CFormViewEditDB::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t str
 	}
 }
 
-void CFormViewEditDB::OnCbnSelchangeComboImglist()
-{
-	// TODO: Add your control notification handler code here
-	UpdateData(TRUE);
-	int id = m_comboImgList.GetCurSel();
-	pView->ChangeDisplayImage(0, id);
-}
+//void CFormViewEditDB::OnCbnSelchangeComboImglist()
+//{
+//	// TODO: Add your control notification handler code here
+//	UpdateData(TRUE);
+//	int id = m_comboImgList.GetCurSel();
+//	pView->ChangeDisplayImage(0, id);
+//}

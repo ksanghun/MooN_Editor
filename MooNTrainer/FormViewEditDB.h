@@ -60,8 +60,6 @@ public:
 	void SetLayerImgCnt(int clsid, int imgnum);
 
 	CString m_staticPreviewInfo;
-	CComboBox m_comboImgList;
-	afx_msg void OnCbnSelchangeComboImglist();
 };
 
 

@@ -544,6 +544,13 @@ void CMooNTrainerView::ValidateDBLayer()
 	pMain->AddOutputString(strLog, false);
 
 
+
+	int mismatch = totalnum - matchcnt;
+	strLog.Format(L"***Validation result***\nMismatched: %d \nPrecison: %3.2f%s (%d/%d)", mismatch, precision, L"%", mismatch, totalnum);
+	cv::Mat img = cv::Mat(32, 32, CV_8UC1, cv::Scalar(255));
+	pMain->SetPreviewImg(img, strLog);
+
+
 	m_pViewImage->ReleaseSelections();
 }
 
