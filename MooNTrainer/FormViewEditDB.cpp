@@ -84,8 +84,8 @@ void CFormViewEditDB::OnSize(UINT nType, int cx, int cy)
 	if (m_bIsCreated) {
 //		m_listCtrl.MoveWindow(10, 120, cx - 220, cy - 120);
 		int hw = cx / 2;
-		m_listCtrlVali.MoveWindow(10, 140, cx - 20, cy - 140);
-		m_listCtrl.MoveWindow(10, 140, cx - 20, cy - 140);
+		m_listCtrlVali.MoveWindow(10, 240, cx - 20, cy - 240);
+		m_listCtrl.MoveWindow(10, 240, cx - 20, cy - 240);
 	}
 }
 
@@ -106,7 +106,7 @@ void CFormViewEditDB::OnInitialUpdate()
 
 //=======================================================//
 //	m_listCtrl.MoveWindow(hw+10, 120, hw-20, h - 120);	
-	m_listCtrl.MoveWindow(10, 140, w - 20, h - 140);
+	m_listCtrl.MoveWindow(10, 240, w - 20, h - 240);
 
 	m_listCtrl.EnableScrollBarCtrl(SB_HORZ);
 	m_listCtrl.ShowScrollBar(SB_HORZ);
@@ -135,7 +135,7 @@ void CFormViewEditDB::OnInitialUpdate()
 
 
 //=======================================================//
-	m_listCtrlVali.MoveWindow(10, 140, w - 20, h - 140);
+	m_listCtrlVali.MoveWindow(10, 240, w - 20, h - 240);
 
 	m_listCtrlVali.EnableScrollBarCtrl(SB_HORZ);
 	m_listCtrlVali.ShowScrollBar(SB_HORZ);
