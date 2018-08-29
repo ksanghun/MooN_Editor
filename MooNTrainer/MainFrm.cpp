@@ -234,7 +234,8 @@ BOOL CMainFrame::CreateDockingWindows()
 		return FALSE; // failed to create
 	}
 
-	if (!m_wndProperties.Create(L"", this, CRect(0, 0, 300, 500), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT, AFX_CBRS_REGULAR_TABS, dwNoCloseBarStyle))
+	if (!m_wndProperties.Create(L"", this, CRect(0, 0, 300, 500), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
+//	if (!m_wndProperties.Create(L"", this, CRect(0, 0, 300, 500), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT, AFX_CBRS_REGULAR_TABS, dwNoCloseBarStyle))
 	{
 		TRACE0("Failed to create Properties window\n");
 		return FALSE; // failed to create
@@ -571,8 +572,8 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 	CFrameWndEx::OnSize(nType, cx, cy);
 
 	// TODO: Add your message handler code here
-	if(m_bIsCreated)
-		m_wndProperties.SetWindowPos(NULL, 0, 0, 300, cy, SWP_NOZORDER);
+	//if(m_bIsCreated)
+	//	m_wndProperties.SetWindowPos(NULL, 0, 0, 300, cy, SWP_NOZORDER);
 
 
 }
