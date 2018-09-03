@@ -133,3 +133,10 @@ void CDockProperties::SetLayerImgCnt(int clsid, int imgnum)
 		m_pProperties->SetLayerImgCnt(clsid, imgnum);
 	}
 }
+
+void CDockProperties::DeleteSelListItem()
+{
+	if (m_pProperties) {
+		m_pProperties->DeleteSelListItem();
+	}
+}

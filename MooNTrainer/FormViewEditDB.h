@@ -65,10 +65,11 @@ public:
 
 
 	void ResetLogList(int listid);
-	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2, int _listType);
+	void AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _masterId, int _imgWid, int _listType);
 	CBitmap* GetLogCBitmap(cv::Mat& pimg);
 	void SetPreviewImg(cv::Mat& pimg, CString strInfo, int _type);
 	void SetLayerImgCnt(int clsid, int imgnum);
+	void DeleteSelListItem();
 
 	CString m_staticPreviewInfo;
 	CTabCtrl m_ctrlTab;

@@ -123,3 +123,8 @@ void CMNDBLayer::UpdateDBCode(int clsid, int id, wchar_t code)
 {
 	m_layerImage[clsid].UpdateDBCode(id, code);
 }
+
+void CMNDBLayer::SaveUserChanges(int clsid)
+{
+	m_layerImage[clsid].SaveUserChanges();
+}

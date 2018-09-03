@@ -205,6 +205,36 @@ void CFormViewEditDB::ResetLogList(int listid)
 
 }
 
+void CFormViewEditDB::DeleteSelListItem()
+{
+	int tabid = m_ctrlTab.GetCurSel();
+	if (tabid == 0) {
+		POSITION pos = m_listCtrl.GetFirstSelectedItemPosition();
+		while (pos != NULL)
+		{
+			int nItem = m_listCtrl.GetNextSelectedItem(pos);
+			int wid = _ttoi(m_listCtrl.GetItemText(nItem, 5));
+			pView->UpdateDBCode(0, wid, 0);
+
+			m_listCtrl.DeleteItem(nItem);
+			pos = m_listCtrl.GetFirstSelectedItemPosition();
+			m_listCtrl.HideEditCtrl();			
+		}
+	}
+	else {
+		POSITION pos = m_listCtrlVali.GetFirstSelectedItemPosition();
+		while (pos != NULL)
+		{
+			int nItem = m_listCtrlVali.GetNextSelectedItem(pos);
+			int wid = _ttoi(m_listCtrlVali.GetItemText(nItem, 5));
+			pView->UpdateDBCode(0, wid, 0);
+
+			m_listCtrlVali.DeleteItem(nItem);
+			pos = m_listCtrlVali.GetFirstSelectedItemPosition();
+			m_listCtrlVali.HideEditCtrl();
+		}
+	}
+}
 void CFormViewEditDB::SetLayerImgCnt(int clsid, int imgnum)
 {
 	//CString strFile;
@@ -337,7 +367,7 @@ CBitmap* CFormViewEditDB::GetLogCBitmap(cv::Mat& pimg)
 }
 
 
-void CFormViewEditDB::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _id1, int _id2, int _listType)
+void CFormViewEditDB::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t strRecognized, float fAccuracy, int _masterId, int _imgWid, int _listType)
 {
 	//	ResetLogList();	
 	if (_listType == 0) {
@@ -360,9 +390,9 @@ void CFormViewEditDB::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t str
 			m_listCtrl.SetItem(m_nRecordNum, 2, LVIF_TEXT, (CString)strRecognized, m_imgListId, 0, 0, NULL);	// CODE //
 			strItem.Format(L"%3.2f", fAccuracy * 100);
 			m_listCtrl.SetItem(m_nRecordNum, 3, LVIF_TEXT, strItem, m_imgListId, 0, 0, NULL);
-			strItem.Format(L"%d", _id1);
+			strItem.Format(L"%d", _masterId);
 			m_listCtrl.SetItem(m_nRecordNum, 4, LVIF_TEXT, strItem, m_imgListId, 0, 0, NULL);
-			strItem.Format(L"%d", _id2);
+			strItem.Format(L"%d", _imgWid);
 			m_listCtrl.SetItem(m_nRecordNum, 5, LVIF_TEXT, strItem, m_imgListId, 0, 0, NULL);
 			strItem.Format(L"%d", _listType);
 			m_listCtrl.SetItem(m_nRecordNum, 6, LVIF_TEXT, strItem, m_imgListId, 0, 0, NULL);
@@ -393,9 +423,9 @@ void CFormViewEditDB::AddRecord(cv::Mat& srcImg, wchar_t strTrained, wchar_t str
 			m_listCtrlVali.SetItem(m_nRecordNumVali, 2, LVIF_TEXT, (CString)strRecognized, m_imgListIdVali, 0, 0, NULL);	// CODE //
 			strItem.Format(L"%3.2f", fAccuracy * 100);
 			m_listCtrlVali.SetItem(m_nRecordNumVali, 3, LVIF_TEXT, strItem, m_imgListIdVali, 0, 0, NULL);
-			strItem.Format(L"%d", _id1);
+			strItem.Format(L"%d", _masterId);
 			m_listCtrlVali.SetItem(m_nRecordNumVali, 4, LVIF_TEXT, strItem, m_imgListIdVali, 0, 0, NULL);
-			strItem.Format(L"%d", _id2);
+			strItem.Format(L"%d", _imgWid);
 			m_listCtrlVali.SetItem(m_nRecordNumVali, 5, LVIF_TEXT, strItem, m_imgListIdVali, 0, 0, NULL);
 			strItem.Format(L"%d", _listType);
 			m_listCtrlVali.SetItem(m_nRecordNumVali, 6, LVIF_TEXT, strItem, m_imgListIdVali, 0, 0, NULL);
@@ -442,7 +472,6 @@ void CFormViewEditDB::OnBnClickedButton1()
 
 	if (curlist == 0) {
 		int cnt = m_listCtrl.GetItemCount();
-		bool IsSaveFile = false;
 		for (int i = 0; i < cnt; i++) {
 			if (m_listCtrl.GetItemText(i, 7) == L"1") {
 				int wid = _ttoi(m_listCtrl.GetItemText(i, 5));
@@ -451,17 +480,14 @@ void CFormViewEditDB::OnBnClickedButton1()
 				wsprintf(&code, strCode.GetBuffer());
 
 				pView->UpdateDBCode(0, wid, code);
-				IsSaveFile = true;
 			}
 		}
-		if(IsSaveFile)
-			pView->UpdateDBCode(0, -1, 0);
+		pView->SaveUserChanges(0);
 	}
 
 
 	else if (curlist == 1) {
 		int cnt = m_listCtrlVali.GetItemCount();
-		bool IsSaveFile = false;
 		for (int i = 0; i < cnt; i++) {
 			if (m_listCtrlVali.GetItemText(i, 7) == L"1") {
 				int wid = _ttoi(m_listCtrlVali.GetItemText(i, 5));
@@ -470,10 +496,8 @@ void CFormViewEditDB::OnBnClickedButton1()
 				wsprintf(&code, strCode.GetBuffer());
 
 				pView->UpdateDBCode(0, wid, code);
-				IsSaveFile = true;
 			}
 		}
-		if (IsSaveFile)
-			pView->UpdateDBCode(0, -1, 0);
+		pView->SaveUserChanges(0);
 	}
 }

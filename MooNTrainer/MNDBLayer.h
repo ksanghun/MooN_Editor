@@ -32,6 +32,7 @@ public:
 	_stLayerImgInfo GetLayerImgInfo(int clsid);
 
 	void UpdateDBCode(int clsid, int id, wchar_t code);
+	void SaveUserChanges(int clsid);
 private:
 
 	CMNDBLayerImage m_layerImage[8];	

@@ -30,6 +30,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_FILE_OPEN, &CMainFrame::OnFileOpen)
 	ON_COMMAND(ID_TOOL_VALI_DB, &CMainFrame::OnToolValiDb)
 	ON_WM_SIZE()
+	ON_COMMAND(ID_POP_DELETE, &CMainFrame::OnPopDelete)
+	ON_COMMAND(ID_POP_AUGMENTATION, &CMainFrame::OnPopAugmentation)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -576,4 +578,18 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 	//	m_wndProperties.SetWindowPos(NULL, 0, 0, 300, cy, SWP_NOZORDER);
 
 
+}
+
+
+void CMainFrame::OnPopDelete()
+{
+	// TODO: Add your command handler code here
+	m_wndProperties.DeleteSelListItem();
+}
+
+
+void CMainFrame::OnPopAugmentation()
+{
+	// TODO: Add your command handler code here
+	MessageBox(L"Not yet", NULL);
 }

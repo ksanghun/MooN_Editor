@@ -18,12 +18,11 @@ public:
 	void AddUserColumn(CString strLable, unsigned short colWidth);
 	void AddRecode();
 	void ResetListCtrl();
-	void AddListToTraining();
-	void SetAutoFillOption(bool IsAutoFill) { m_bIsAutoFill = IsAutoFill; }
+	void HideEditCtrl();
 
-	void SelItemByLineTextBoxID(int _id);
-	void DeleteItemByLineTextBoxID(int linetextid);
 
+
+	
 
 // ColumnHeader Class============================//
 	class CCustomDrawHeaderCtrl : public CHeaderCtrl

@@ -37,6 +37,7 @@ typedef struct {
 typedef struct {
 	cv::Mat img;
 	bool bNedUpdate;
+	std::string strPath;
 }_dbMat;
 
 
@@ -51,6 +52,7 @@ public:
 	void InitLayer(int clsId, unsigned short _wnum, unsigned short _hnum, unsigned short _codelen, int cellSizeW, int cellSizeH, CString strPath);
 	void GenerateFirstLayer(int minstrcode, int resolution);
 	cv::Mat GetCutImageByWordInx(int wordIdx, wchar_t& strcode);
+	void FillNullCutImageByWordIdx(int wordIdx);
 
 	cv::Mat FitBoundingBox(cv::Mat img);
 	_recognitionResult GetMatchResultByPixel(cv::Mat& cutImg, _stMatcResTop5& res);
@@ -64,6 +66,7 @@ public:
 	std::vector<_stLayerInfo>* GetFirstLayerInfo() { return &m_vecLayerInfo; }
 
 	void UpdateDBCode(int id, wchar_t code);
+	void SaveUserChanges();
 
 private:
 
@@ -72,6 +75,8 @@ private:
 	int m_layerResolution;
 	int m_hogResolution;
 	int m_totalCodeNum;
+
+	bool m_bNeedToSaveJp3;	
 
 	int m_cellSizeW, m_cellSizeH;
 	unsigned short m_wnum, m_hnum, m_strcodeLen;	

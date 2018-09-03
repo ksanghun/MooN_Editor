@@ -68,6 +68,8 @@ public:
 	void SetPreviewImg(cv::Mat& pimg, CString strInfo, int _type);
 	void SetLayerImgCnt(int clsid, int imgnum);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnPopDelete();
+	afx_msg void OnPopAugmentation();
 };
 
 

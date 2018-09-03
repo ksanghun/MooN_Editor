@@ -120,26 +120,12 @@ void CZListCtrlLog::ResetListCtrl()
 	m_Edit.ShowWindow(SW_HIDE);
 	DeleteAllItems();
 	m_nRecordNum = 0;
-
 }
 
-void CZListCtrlLog::AddListToTraining()
+void CZListCtrlLog::HideEditCtrl()
 {
-//	CMainFrame* pM = (CMainFrame*)AfxGetMainWnd();
-
-//	SINGLETON_DataMng::GetInstance()->ClearListItemVec();
-//	int totalNum = GetItemCount();
-//	for (int row = 0; row < totalNum; ++row)
-//	{
-//		int pageId = _ttoi(GetItemText(row, 13));
-//		int matchId = _ttoi(GetItemText(row, 14));
-//		CString strCode = GetItemText(row, 1);
-//
-//		SINGLETON_DataMng::GetInstance()->AddListItemVecForTraiing(pageId, matchId, strCode);
-////		pView->AddListToTraining(pageId, matchId, strCode);
-//	}
+	m_Edit.ShowWindow(SW_HIDE);
 }
-
 
 void CZListCtrlLog::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 {
@@ -713,10 +699,10 @@ void CZListCtrlLog::OnLButtonDown(UINT nFlags, CPoint point)
 void CZListCtrlLog::OnContextMenu(CWnd* pWnd, CPoint point)
 {
 	// TODO: Add your message handler code here
-	//CMenu menu;
-	//menu.LoadMenuW(IDR_POPUP_LIST);
-	//CMenu* pMenu = menu.GetSubMenu(0);
-	//pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
+	CMenu menu;
+	menu.LoadMenuW(IDR_POPUP_LIST);
+	CMenu* pMenu = menu.GetSubMenu(0);
+	pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
 }
 
 
@@ -776,52 +762,5 @@ void CZListCtrlLog::OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult)
 		m_Edit.ShowWindow(SW_HIDE);
 		return;
 	}
-
-
-
-	
-
-
 	*pResult = 0;
 }
-
-
-void CZListCtrlLog::SelItemByLineTextBoxID(int _id)
-{
-	m_currDrawId = 0;
-	m_colorid = 0;
-
-
-	int cnt = GetItemCount();
-	for (int i = 0; i < cnt; i++) {
-		CString strId = GetItemText(i, 15);
-		int id = _ttoi(strId);
-		if (id == _id) {
-			SetItemState(m_selItem, 0, LVIS_FOCUSED | LVIS_SELECTED);
-			m_selItem = i;
-			break;
-		}
-	}
-
-	
-	EnsureVisible(m_selItem, TRUE);
-	m_bMoveCamera = false;
-	SetItemState(m_selItem, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-	
-}
-
-void CZListCtrlLog::DeleteItemByLineTextBoxID(int _id)
-{
-	m_currDrawId = 0;	m_colorid = 0;
-	SetItemState(m_selItem, 0, LVIS_FOCUSED | LVIS_SELECTED);
-	int cnt = GetItemCount();
-	for (int i = cnt-1; i >=0; i--) {
-		CString strId = GetItemText(i, 15);
-		int id = _ttoi(strId);
-		if (id == _id) {
-			DeleteItem(i);
-		}
-	}
-}
-
-

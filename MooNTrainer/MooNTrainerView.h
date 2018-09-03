@@ -83,6 +83,7 @@ public:
 	void ValidateDBLayer();
 	void SelectCellMaster(CPoint point, bool IsAddList);
 	void UpdateDBCode(int clsid, int id, wchar_t code);
+	void SaveUserChanges(int clsid);
 
 	afx_msg void OnPaint();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

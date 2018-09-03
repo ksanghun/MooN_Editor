@@ -11,6 +11,7 @@ CMNDBLayerImage::CMNDBLayerImage()
 	m_cellSizeH = 0;
 	m_hogResolution = 32;
 	m_totalCodeNum = 0;
+	m_bNeedToSaveJp3 = false;
 }
 
 CMNDBLayerImage::~CMNDBLayerImage()
@@ -90,6 +91,15 @@ cv::Mat CMNDBLayerImage::GetCutImageByWordInx(int wordIdx, wchar_t& strcode)
 	int imgIdx = wordIdx / (m_wnum * m_hnum);
 	strcode = m_vecStrCode[wordIdx][0];
 	return getWordCutImg(wordIdx, m_cellSizeW, m_imageDb[imgIdx].img, m_classId, m_wnum, m_hnum);
+}
+
+void CMNDBLayerImage::FillNullCutImageByWordIdx(int wordIdx)
+{
+	int imgIdx = wordIdx / (m_wnum * m_hnum);
+	cv::Rect r1 = getPositionByIndex(wordIdx, m_cellSizeW, m_classId, m_wnum, m_hnum);
+	m_imageDb[imgIdx].img(r1).setTo(cv::Scalar(255));
+	m_imageDb[imgIdx].bNedUpdate = true;
+	
 }
 
 cv::Rect CMNDBLayerImage::getPositionByIndex(int wordId, int cellSize, int clsId, int wNum, int hNum)
@@ -325,11 +335,13 @@ void CMNDBLayerImage::LoadLayerImageFile(CString str)
 		_dbMat clsImg;
 		clsImg.img = cv::imread(sz, CV_LOAD_IMAGE_GRAYSCALE);
 		clsImg.bNedUpdate = false;
+		clsImg.strPath = sz;
 		m_imgcnt++;
 
 		if (clsImg.img.ptr() != nullptr) {
 			//cv::imshow("class image", clsImg);
 			//cv::waitKey(10);
+
 			m_imageDb.push_back(std::move(clsImg));
 			CString strLog;
 			strLog.Format(L"Load %s...done.", strFile);
@@ -351,17 +363,41 @@ void CMNDBLayerImage::LoadLayerImageFile(CString str)
 void CMNDBLayerImage::UpdateDBCode(int id, wchar_t code)
 {
 	if ((id>=0) && (id < m_vecStrCode.size())) {
-		delete [] m_vecStrCode[id];
-		wchar_t* ncode = new wchar_t[_C1_CODE_LEN];
-		memset(ncode, 0x00, sizeof(wchar_t)*_C1_CODE_LEN);
-		memcpy(ncode, &code, sizeof(wchar_t));
-		m_vecStrCode[id] = ncode;
+		if (code == 0) {		// Delete //
+			delete[] m_vecStrCode[id];
+			wchar_t* ncode = new wchar_t[_C1_CODE_LEN];
+			memset(ncode, 0x00, sizeof(wchar_t)*_C1_CODE_LEN);
+			m_vecStrCode[id] = ncode;
+			m_bNeedToSaveJp3 = true;
+
+			FillNullCutImageByWordIdx(id);
+		}
+		else {
+			delete[] m_vecStrCode[id];
+			wchar_t* ncode = new wchar_t[_C1_CODE_LEN];
+			memset(ncode, 0x00, sizeof(wchar_t)*_C1_CODE_LEN);
+			memcpy(ncode, &code, sizeof(wchar_t));
+			m_vecStrCode[id] = ncode;
+			m_bNeedToSaveJp3 = true;
+		}
 	}
 
-	if (id == -1) { // Save File
-		WriteJP3File(m_strPatJp3);
-//		GenerateFirstLayer(0, m_layerResolution);
+	//if (id == -1) { // Save File
+	//	WriteJP3File(m_strPatJp3);
+	//}
+}
+
+void CMNDBLayerImage::SaveUserChanges()
+{
+	WriteJP3File(m_strPatJp3);
+	m_bNeedToSaveJp3 = false;
+
+	for (int i = 0; i < m_imgcnt; i++) {
+		if (m_imageDb[i].bNedUpdate) {
+			cv::imwrite(m_imageDb[i].strPath, m_imageDb[i].img);
+		}
 	}
+
 }
 
 void CMNDBLayerImage::LoadJP3File(CString str)

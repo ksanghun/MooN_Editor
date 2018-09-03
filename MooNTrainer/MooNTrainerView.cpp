@@ -622,3 +622,8 @@ void CMooNTrainerView::UpdateDBCode(int clsid, int id, wchar_t code)
 {
 	m_dbLayer.UpdateDBCode(clsid, id, code);
 }
+
+void CMooNTrainerView::SaveUserChanges(int clsid)
+{
+	m_dbLayer.SaveUserChanges(clsid);
+}

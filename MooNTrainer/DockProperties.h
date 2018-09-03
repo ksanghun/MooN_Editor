@@ -29,7 +29,7 @@ public:
 	void ResetListCtrl(int listid);
 	void SetPreviewImg(cv::Mat& pimg, CString strInfo, int _type);
 	void SetLayerImgCnt(int clsid, int imgnum);
-
+	void DeleteSelListItem();
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
