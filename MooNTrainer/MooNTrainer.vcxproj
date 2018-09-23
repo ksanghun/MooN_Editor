@@ -197,6 +197,7 @@
   <ItemGroup>
     <ClInclude Include="Camera2Axis.h" />
     <ClInclude Include="data_type.h" />
+    <ClInclude Include="DlgProbilityTest.h" />
     <ClInclude Include="DockProperties.h" />
     <ClInclude Include="FormViewEditDB.h" />
     <ClInclude Include="GLVIEW.h" />
@@ -204,9 +205,13 @@
     <ClInclude Include="math_tool.h" />
     <ClInclude Include="MNDBLayer.h" />
     <ClInclude Include="MNDBLayerImage.h" />
+    <ClInclude Include="MNSingleton.h" />
+    <ClInclude Include="MooNDataManager.h" />
     <ClInclude Include="MooNTrainer.h" />
     <ClInclude Include="MooNTrainerDoc.h" />
     <ClInclude Include="MooNTrainerView.h" />
+    <ClInclude Include="MooNTree.h" />
+    <ClInclude Include="MooNTreeItem.h" />
     <ClInclude Include="ObjImage.h" />
     <ClInclude Include="OGLWnd.h" />
     <ClInclude Include="OutputWnd.h" />
@@ -219,6 +224,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera2Axis.cpp" />
+    <ClCompile Include="DlgProbilityTest.cpp" />
     <ClCompile Include="DockProperties.cpp" />
     <ClCompile Include="FormViewEditDB.cpp" />
     <ClCompile Include="GLVIEW.cpp" />
@@ -226,9 +232,12 @@
     <ClCompile Include="math_tool.cpp" />
     <ClCompile Include="MNDBLayer.cpp" />
     <ClCompile Include="MNDBLayerImage.cpp" />
+    <ClCompile Include="MooNDataManager.cpp" />
     <ClCompile Include="MooNTrainer.cpp" />
     <ClCompile Include="MooNTrainerDoc.cpp" />
     <ClCompile Include="MooNTrainerView.cpp" />
+    <ClCompile Include="MooNTree.cpp" />
+    <ClCompile Include="MooNTreeItem.cpp" />
     <ClCompile Include="ObjImage.cpp" />
     <ClCompile Include="OGLWnd.cpp" />
     <ClCompile Include="OutputWnd.cpp" />

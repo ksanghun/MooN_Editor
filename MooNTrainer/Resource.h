@@ -84,8 +84,8 @@
 #define IDS_EXPLORER                    305
 #define IDS_EDIT_MENU                   306
 #define IDD_FORMVIEWEDITDB              310
-#define IDR_MENU1                       313
 #define IDR_POPUP_LIST                  313
+#define IDD_DIALOG1                     314
 #define IDC_LIST2                       1004
 #define IDC_LIST_RESULT                 1004
 #define IDC_STATIC_PREVIEW              1005
@@ -96,18 +96,23 @@
 #define IDC_LIST_VALI                   1008
 #define IDC_BUTTON1                     1009
 #define IDC_TAB_LIST                    1010
+#define IDC_EDIT1                       1011
+#define IDC_EDIT_INPUT                  1011
+#define IDC_BUTTON2                     1012
+#define IDC_BN_FILE                     1013
 #define ID_TOOL_VALI_DB                 32771
 #define ID_TEST_OPENPROJECT             32772
 #define ID_POP_DELETE                   32773
 #define ID_POP_AUGMENTATION             32774
+#define ID_TOOL_PROBILITYTEST           32775
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        314
-#define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1011
+#define _APS_NEXT_RESOURCE_VALUE        316
+#define _APS_NEXT_COMMAND_VALUE         32776
+#define _APS_NEXT_CONTROL_VALUE         1015
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

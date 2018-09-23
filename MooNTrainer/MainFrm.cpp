@@ -7,7 +7,7 @@
 
 #include "MainFrm.h"
 #include "MooNTrainerView.h"
-
+#include "DlgProbilityTest.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -32,6 +32,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_WM_SIZE()
 	ON_COMMAND(ID_POP_DELETE, &CMainFrame::OnPopDelete)
 	ON_COMMAND(ID_POP_AUGMENTATION, &CMainFrame::OnPopAugmentation)
+	ON_COMMAND(ID_TOOL_PROBILITYTEST, &CMainFrame::OnToolProbilitytest)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -592,4 +593,15 @@ void CMainFrame::OnPopAugmentation()
 {
 	// TODO: Add your command handler code here
 	MessageBox(L"Not yet", NULL);
+}
+
+
+void CMainFrame::OnToolProbilitytest()
+{
+	// TODO: Add your command handler code here
+	CDlgProbilityTest dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+
+	}
 }

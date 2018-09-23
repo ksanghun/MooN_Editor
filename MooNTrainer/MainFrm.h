@@ -6,6 +6,7 @@
 #include "OutputWnd.h"
 #include "DockProperties.h"
 
+
 class CMainFrame : public CFrameWndEx
 {
 	
@@ -70,6 +71,7 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnPopDelete();
 	afx_msg void OnPopAugmentation();
+	afx_msg void OnToolProbilitytest();
 };
 
 

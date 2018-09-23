@@ -210,9 +210,7 @@ BEGIN
     BEGIN
         MENUITEM "Validate DB",                 ID_TOOL_VALI_DB
         MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+        MENUITEM "Probility Test",              ID_TOOL_PROBILITYTEST
     END
     POPUP "&View"
     BEGIN
@@ -368,6 +366,18 @@ BEGIN
     CONTROL         "",IDC_TAB_LIST,"SysTabControl32",0x0,7,59,117,13
 END
 
+IDD_DIALOG1 DIALOGEX 0, 0, 161, 318
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Probability Test"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Open File",IDC_BN_FILE,104,7,50,14
+    EDITTEXT        IDC_EDIT_INPUT,7,23,92,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Predict",IDC_BUTTON2,104,23,50,14
+    CONTROL         "",IDC_LIST_RESULT,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,42,147,269
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -431,6 +441,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 140
     END
+
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 154
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 311
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -441,6 +459,11 @@ END
 //
 
 IDD_FORMVIEWEDITDB AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG1 AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

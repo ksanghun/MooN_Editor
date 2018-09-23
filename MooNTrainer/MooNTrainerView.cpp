@@ -12,6 +12,7 @@
 #include "MooNTrainerDoc.h"
 #include "MooNTrainerView.h"
 #include "MainFrm.h"
+#include "MooNDataManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -590,6 +591,25 @@ int CMooNTrainerView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		//cv::cvtColor(bgimg, bgimg, CV_BGR2RGB);
 
 		m_pViewImage->InitGLview(0, 0);
+
+		// init Manager //
+		SINGLETON_DataMng::GetInstance()->InitManager();
+		SINGLETON_DataMng::GetInstance()->LoadTextFileForTree(L"D:/test1.txt");
+
+		std::vector<_stMooNProb> vecRes;
+		wchar_t* input = L"±×¸³";
+		SINGLETON_DataMng::GetInstance()->PredictNext(input, vecRes);
+		for (auto i = 0; i < vecRes.size(); i++) {
+			CString stroutput;
+			CString strCode;
+			if (vecRes[i].code == 32)
+				strCode = L"space";
+			else
+				strCode = (wchar_t)vecRes[i].code;
+			stroutput.Format(L"%s-%s(%3.2f)", input, strCode, vecRes[i].prob);
+		}
+
+
 		//bgimg.release();
 
 	}
