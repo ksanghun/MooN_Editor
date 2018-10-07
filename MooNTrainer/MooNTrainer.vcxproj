@@ -121,7 +121,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>./lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_calib3d330d.lib;opencv_core330d.lib;opencv_features2d330d.lib;opencv_highgui330d.lib;opencv_imgcodecs330d.lib;opencv_imgproc330d.lib;opencv_objdetect330d.lib;opencv_photo330d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_calib3d330d.lib;opencv_core330d.lib;opencv_features2d330d.lib;opencv_highgui330d.lib;opencv_imgcodecs330d.lib;opencv_imgproc330d.lib;opencv_objdetect330d.lib;opencv_photo330d.lib;yolo_cpp_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -178,7 +178,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>./lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_calib3d330.lib;opencv_core330.lib;opencv_features2d330.lib;opencv_highgui330.lib;opencv_imgcodecs330.lib;opencv_imgproc330.lib;opencv_objdetect330.lib;opencv_photo330.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_calib3d330.lib;opencv_core330.lib;opencv_features2d330.lib;opencv_highgui330.lib;opencv_imgcodecs330.lib;opencv_imgproc330.lib;opencv_objdetect330.lib;opencv_photo330.lib;yolo_cpp_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -219,6 +219,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ViewTree.h" />
+    <ClInclude Include="yolo_rnn_class.hpp" />
     <ClInclude Include="ZEdit.h" />
     <ClInclude Include="ZListCtrlLog.h" />
   </ItemGroup>

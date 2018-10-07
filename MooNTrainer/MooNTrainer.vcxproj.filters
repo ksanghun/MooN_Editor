@@ -96,6 +96,9 @@
     <ClInclude Include="DlgProbilityTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="yolo_rnn_class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MooNTrainer.cpp">

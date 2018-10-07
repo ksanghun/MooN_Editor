@@ -96,10 +96,15 @@
 #define IDC_LIST_VALI                   1008
 #define IDC_BUTTON1                     1009
 #define IDC_TAB_LIST                    1010
-#define IDC_EDIT1                       1011
 #define IDC_EDIT_INPUT                  1011
 #define IDC_BUTTON2                     1012
 #define IDC_BN_FILE                     1013
+#define IDC_EDIT_INPUT_TEXT             1014
+#define IDC_BN_CONVERT                  1015
+#define IDC_BN_TRAINING                 1016
+#define IDC_EDIT_INPUT2                 1019
+#define IDC_EDIT_RNN_WEIGHT             1019
+#define IDC_BN_LOAD_RNN                 1020
 #define ID_TOOL_VALI_DB                 32771
 #define ID_TEST_OPENPROJECT             32772
 #define ID_POP_DELETE                   32773
