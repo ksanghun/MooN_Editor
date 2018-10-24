@@ -101,7 +101,7 @@ void CDlgProbilityTest::OnBnClickedButton2()		// Predict Next Characters
 	unsigned char* cInput = new unsigned char[len];
 
 	decompsiteWchar(input, cInput, wlen);
-	std::vector<next_char> res = m_pPredictor->predict_next(cInput, len);
+	std::vector<next_char> res = m_pPredictor->predict_next(cInput, len, 0.5f);
 
 
 	int listid = 0;
@@ -110,18 +110,18 @@ void CDlgProbilityTest::OnBnClickedButton2()		// Predict Next Characters
 
 	wchar_t* next = new wchar_t[2];
 	for (auto i = 0; i < res.size(); i++) {
-		if (res[i].prob > 0.1) {
+		if (res[i].prob > 0.0) {
 
 			unsigned char* secInput = 0;
 			secInput = new unsigned char[len + 1];
 			memcpy(secInput, cInput, sizeof(char)*len);
 			secInput[len] = res[i].next;
 
-			std::vector<next_char> res2 = m_pPredictor->predict_next(secInput, len + 1);
+			std::vector<next_char> res2 = m_pPredictor->predict_next(secInput, len + 1, 0.5f);
 			delete[] secInput;
 
 			for (auto j = 0; j < res2.size(); j++) {
-				if (res2[j].prob > 0.001) {
+				if (res2[j].prob > 0.0) {
 					next[0] = ((res[i].next - 1) * 255) + (res2[j].next - 1);
 					next[1] = 0;
 					int nCode = ((res[i].next - 1) * 255) + (res2[j].next - 1);
@@ -155,15 +155,26 @@ void CDlgProbilityTest::OnBnClickedButton2()		// Predict Next Characters
 
 void CDlgProbilityTest::convertUnicodeToAscii(wchar_t* buf, int len, unsigned char* dstBuff)
 {
+	int min = 99999, max = 0;
 	for (int i = 0; i < len; i++) {
 		unsigned short ucode = buf[i];
+		if (ucode != 10) {
 
-		unsigned short code1 = (ucode / 255) + 1;
-		unsigned short code2 = (ucode % 255) + 1;
+			unsigned short code1 = (ucode / 255) + 1;
+			unsigned short code2 = (ucode % 255) + 1;
 
+			if ((code1 >= 255) || (code2 >= 255)) {
+				break;
+			}
 
-		dstBuff[i * 2] = code1;
-		dstBuff[i * 2 + 1] = code2;
+			dstBuff[i * 2] = code1;
+			dstBuff[i * 2 + 1] = code2;
+
+			if (min > ucode)
+				min = ucode;
+			if (max < ucode)
+				max = ucode;
+		}
 	}
 }
 
@@ -203,7 +214,7 @@ void CDlgProbilityTest::OnBnClickedBnConvert()
 			memset(rbuf, '\0', sizeof(wchar_t) * _MAX_BUFF_SIZE);
 
 			// Skip first !! //
-			fseek(fp, 2, SEEK_SET);
+			//fseek(fp, 2, SEEK_SET);
 			while (fgetws(rbuf, sizeof(wchar_t) * _MAX_BUFF_SIZE, fp) != NULL)
 			{
 				int len = wcslen(rbuf);

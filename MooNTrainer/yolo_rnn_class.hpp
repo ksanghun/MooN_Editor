@@ -34,7 +34,7 @@ public:
 	YOLODLL_API Detector(std::string cfg_filename, std::string weight_filename, int gpu_id = 0);
 	YOLODLL_API ~Detector();
 
-	YOLODLL_API std::vector<next_char> predict_next(unsigned char* str, int len);
+	YOLODLL_API std::vector<next_char> predict_next(unsigned char* str, int len, float temp);
 
 	YOLODLL_API int get_net_width() const;
 	YOLODLL_API int get_net_height() const;
