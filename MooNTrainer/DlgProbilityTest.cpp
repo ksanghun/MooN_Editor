@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CDlgProbilityTest, CDialogEx)
 	ON_BN_CLICKED(IDC_BN_CONVERT, &CDlgProbilityTest::OnBnClickedBnConvert)
 	ON_BN_CLICKED(IDC_BN_TRAINING, &CDlgProbilityTest::OnBnClickedBnTraining)
 	ON_BN_CLICKED(IDC_BN_LOAD_RNN, &CDlgProbilityTest::OnBnClickedBnLoadRnn)
+	ON_BN_CLICKED(IDC_BN_STYLE_TRANSFER, &CDlgProbilityTest::OnBnClickedBnStyleTransfer)
 END_MESSAGE_MAP()
 
 
@@ -323,4 +324,123 @@ BOOL CDlgProbilityTest::OnInitDialog()
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+
+void CDlgProbilityTest::OnBnClickedBnStyleTransfer()
+{
+	// TODO: Add your control notification handler code here
+	FILE* fp;
+	_wfopen_s(&fp, L"D:\\StyleTransfer\\testimg\\ucode.txt", L"rt,ccs=UTF-8");
+	if (fp) {
+		wchar_t rbuf[_MAX_BUFF_SIZE];
+		memset(rbuf, '\0', sizeof(wchar_t) * _MAX_BUFF_SIZE);
+
+		// Skip first !! //
+		//fseek(fp, 2, SEEK_SET);
+		std::vector<wchar_t*>vecWchar;
+		while (fgetws(rbuf, sizeof(wchar_t) * _MAX_BUFF_SIZE, fp) != NULL)
+		{
+			int len = wcslen(rbuf)-1;
+			for (int i = 0; i < len; i++) {
+				wchar_t* ch = new wchar_t[4];
+				memset(ch, 0x00, sizeof(wchar_t) * 4);
+				ch[0] = rbuf[i];
+				vecWchar.push_back(ch);
+			}
+		}
+		fclose(fp);
+
+		// Write //
+
+		FILE* fp2 = 0;
+		fopen_s(&fp2, "D:\\StyleTransfer\\testimg\\class00.jp3", "wb");		
+		if (fp2) {
+			int num = vecWchar.size();
+			int clen = 4;
+			fwrite(&num, sizeof(int), 1, fp);
+			fwrite(&clen, sizeof(int), 1, fp);
+			for (int i = 0; i < num; i++) {
+				fwrite(vecWchar[i], sizeof(wchar_t)*4, 1, fp);
+			}
+			fclose(fp2);
+		}
+	}
+
+
+
+
+// generate image //
+	USES_CONVERSION;
+
+	cv::Mat clsimg = cv::Mat::zeros(cv::Size(60 * 32, 60 * 32), CV_8U);
+
+	int imgid = 9;
+	int addidx = 0;
+	for (int i = 0; i <20; i++) {
+		CString strPng;
+		strPng.Format(L"D:\\StyleTransfer\\testimg\\inferred_%04d.png", imgid);
+
+		char* sz = 0;
+		sz = T2A(strPng);
+		cv::Mat srcImg = cv::imread(sz, CV_LOAD_IMAGE_GRAYSCALE);
+	//	cv::imshow("read", srcImg);
+
+		for (int j = 0; j < 160; j++) {
+			cv::Mat img = getWordCutImg(j, 256, srcImg, 0, 10, 16);
+			cv::resize(img, img, cv::Size(32, 32));
+
+			cv::Rect r1 = getPositionByIndex(addidx, 32, 0, 60, 60);
+			img.copyTo(clsimg(r1));
+			addidx++;
+		}
+		imgid += 10;		
+	}
+
+//	cv::imshow("read", clsimg);
+	cv::imwrite("D:\\StyleTransfer\\testimg\\class00_00.jp2", clsimg);
+	cv::imwrite("D:\\StyleTransfer\\testimg\\class00_00.jpg", clsimg);
+
+
+}
+
+
+cv::Mat CDlgProbilityTest::getWordCutImg(int wordId, int cellSize, cv::Mat& clsImg, int clsId, int wNum, int hNum)
+{
+	cv::Rect r1;
+	
+	int wNumInClass = wNum*hNum;
+	wordId = wordId - (wordId / wNumInClass)*wNumInClass;
+
+	int w = (clsId + 1) * cellSize;
+	int h = cellSize;
+
+//	cv::Rect r1;
+	r1.y = (wordId % hNum)*h;
+	r1.x = (wordId / hNum)*w;
+	r1.width = cellSize;
+	r1.height = cellSize;
+	
+	
+//	= getPositionByIndex(wordId, cellSize, clsId, wNum, hNum);
+	cv::Mat img = cv::Mat(cellSize, cellSize, CV_8UC1, cv::Scalar(255));
+	clsImg(r1).copyTo(img(cv::Rect(0, 0, cellSize, cellSize)));
+	return img;
+}
+
+cv::Rect CDlgProbilityTest::getPositionByIndex(int wordId, int cellSize, int clsId, int wNum, int hNum)
+{
+	int wNumInClass = wNum*hNum;
+	wordId = wordId - (wordId / wNumInClass)*wNumInClass;
+
+	int w = (clsId + 1) * cellSize;
+	int h = cellSize;
+
+	cv::Rect r1;
+	r1.x = (wordId % wNum)*w;
+	r1.y = (wordId / wNum)*h;
+	r1.width = cellSize;
+	r1.height = cellSize;
+
+	return r1;
 }

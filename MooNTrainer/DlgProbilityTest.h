@@ -3,6 +3,11 @@
 
 #include "yolo_rnn_class.hpp"
 // CDlgProbilityTest dialog
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#include "opencv2/objdetect.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/photo/photo.hpp"
 
 class CDlgProbilityTest : public CDialogEx
 {
@@ -37,8 +42,12 @@ private:
 	void convertUnicodeToAscii(wchar_t* buf, int len, unsigned char* dstBuff);
 	void decompsiteWchar(wchar_t* src, unsigned char* dst, int wlen);
 	void setRNNModel(CString strModel);
+
+	cv::Rect getPositionByIndex(int wordId, int cellSize, int clsId, int wNum, int hNum);
+	cv::Mat getWordCutImg(int wordId, int cellSize, cv::Mat& clsImg, int clsId, int wNum, int hNum);
 public:
 	afx_msg void OnBnClickedBnLoadRnn();
 	CString m_strRnnWeight;
 	virtual BOOL OnInitDialog();
+	afx_msg void OnBnClickedBnStyleTransfer();
 };

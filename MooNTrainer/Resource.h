@@ -102,7 +102,7 @@
 #define IDC_EDIT_INPUT_TEXT             1014
 #define IDC_BN_CONVERT                  1015
 #define IDC_BN_TRAINING                 1016
-#define IDC_EDIT_INPUT2                 1019
+#define IDC_BN_STYLE_TRANSFER           1017
 #define IDC_EDIT_RNN_WEIGHT             1019
 #define IDC_BN_LOAD_RNN                 1020
 #define ID_TOOL_VALI_DB                 32771
@@ -117,7 +117,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1015
+#define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif
