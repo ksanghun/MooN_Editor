@@ -38,3 +38,5 @@ void CZEdit::OnContextMenu(CWnd* pWnd, CPoint point)
 	//CMenu* pMenu = menu.GetSubMenu(0);
 	//pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
 }
+
+

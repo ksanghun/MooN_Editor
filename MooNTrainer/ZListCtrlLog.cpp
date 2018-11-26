@@ -109,7 +109,7 @@ void CZListCtrlLog::InitListCtrl()
 		CLIP_DEFAULT_PRECIS,           // ClipPrecision
 		DEFAULT_QUALITY,               // Quality
 		DEFAULT_PITCH | FF_SWISS,      // PitchAndFamily
-		L"Arial");						// Facename
+		L"Simhei");						// Facename
 
 	
 }
@@ -171,8 +171,6 @@ BOOL CZListCtrlLog::PreTranslateMessage(MSG* pMsg)
 
 	if (pMsg->message == WM_KEYDOWN)
 	{
-		
-
 		if (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE)
 		{
 			UpdateCodeValue();
@@ -236,12 +234,19 @@ BOOL CZListCtrlLog::PreTranslateMessage(MSG* pMsg)
 			//	m_selItem = nItem;
 			//	m_strSearchId = GetItemText(nItem, 3);
 			//}
+		}
+	}
 
 
-
-
-
-
+	// Edit ctrl //
+	if (pMsg->hwnd == m_Edit) {
+		if (pMsg->message == WM_KEYDOWN) {
+			if (::GetKeyState(VK_CONTROL) < 0 && pMsg->wParam == 86) {
+				pMsg->message = WM_PASTE;
+			}
+			else if (::GetKeyState(VK_CONTROL) < 0 && pMsg->wParam == 87) {
+				pMsg->message = WM_COPY;
+			}
 		}
 	}
 
