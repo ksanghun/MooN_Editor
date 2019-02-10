@@ -20,7 +20,7 @@ CZEdit::~CZEdit()
 
 
 BEGIN_MESSAGE_MAP(CZEdit, CEdit)
-	ON_WM_CONTEXTMENU()
+//	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 
@@ -30,13 +30,13 @@ END_MESSAGE_MAP()
 
 
 
-void CZEdit::OnContextMenu(CWnd* pWnd, CPoint point)
-{
-	// TODO: Add your message handler code here
-	//CMenu menu;
-	//menu.LoadMenuW(IDR_POPUP_LIST);
-	//CMenu* pMenu = menu.GetSubMenu(0);
-	//pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
-}
+//void CZEdit::OnContextMenu(CWnd* pWnd, CPoint point)
+//{
+//	// TODO: Add your message handler code here
+//	CMenu menu;
+//	menu.LoadMenuW(IDR_POPUP_LIST);
+//	CMenu* pMenu = menu.GetSubMenu(0);
+//	pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
+//}
 
 
