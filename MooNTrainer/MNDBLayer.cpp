@@ -2,27 +2,30 @@
 #include "MNDBLayer.h"
 #include <ctime>
 #include "MainFrm.h"
-#include "MooNTrainerView.h"
 
-
-
+#define LAYER_CLASS_NUM 1
 CMNDBLayer::CMNDBLayer()
 {
+	m_IsInitDB = false;
 }
 
 
 CMNDBLayer::~CMNDBLayer()
 {
+	for (int i = 0; i < LAYER_CLASS_NUM; i++) {
+		m_layerImage[i].ReleaseLayerImage();
+	}
 }
 
-void CMNDBLayer::Init(CString strDbPath)
+void CMNDBLayer::Init(CString strDbPath, bool IsNew)
 {
 	clock_t begin = clock();
 	
-	int classNum = 1;  // For the first class now
-	for (int i = 0; i < classNum; i++) {
-		m_layerImage[0].InitLayer(0, _C1_WNUM, _C1_HNUM, _C1_CODE_LEN, _UNIT_RESOLOTION_W, _UNIT_RESOLOTION_W, strDbPath);
-		m_layerImage[0].GenerateFirstLayer(1, 32);
+//	int classNum = 1;  // For the first class now
+	for (int i = 0; i < LAYER_CLASS_NUM; i++) {
+		m_layerImage[i].InitLayer(0, 60, 60, 4, 32, 32, strDbPath, IsNew);
+//		m_layerImage[i].GenerateFirstLayer(1, 32);
+		m_layerImage[i].GenerateFirstLayerByShape(1, _FIRSTLAYER_CELL, _FIRSTLAYER_WNUM);
 	}
 
 	clock_t end = clock();
@@ -35,7 +38,7 @@ void CMNDBLayer::Init(CString strDbPath)
 	strLog.Format(L"Elapsed Time: %3.2f seconds\n", (float)elapsed_secs);
 	pMain->AddOutputString(strLog, false);
 	
-	pView->EndThread();
+	m_IsInitDB = true;
 }
 
 
@@ -57,9 +60,9 @@ cv::Mat CMNDBLayer::deskew(cv::Mat& img)
 	return imgOut;
 }
 
-cv::Mat CMNDBLayer::GetCutImagebyWorkPos(int clsId, int pos, wchar_t& strcode)
+cv::Mat CMNDBLayer::GetCutImagebyWorkPos(int clsId, int pos, wchar_t& strcode, int _layertype)
 {
-	return m_layerImage[clsId].GetCutImageByWordInx(pos, strcode);
+	return m_layerImage[clsId].GetCutImageByWordInx(pos, strcode, _layertype);
 }
 
 _recognitionResult CMNDBLayer::GetMatchResult(int clsid, cv::Mat& cutImg, _stMatcResTop5& res)
@@ -99,14 +102,20 @@ cv::Mat& CMNDBLayer::GetClassImage(int clsid, int wordIdx)
 	return m_layerImage[clsid].GetLayerImageByID(wordIdx);
 }
 
-int CMNDBLayer::GetTotalCodeNum(int clsid)
+void CMNDBLayer::UpdateStrCode(int clsid, int wordIdx, wchar_t* _code)
 {
-	return m_layerImage[clsid].GetCodeNum();
+	m_layerImage[clsid].UpdateStrCode(wordIdx, _code);
 }
 
-std::vector<_stLayerInfo>* CMNDBLayer::GetMasterImageInfo(int clsid)
-{ 
-	return m_layerImage[clsid].GetFirstLayerInfo();
+void CMNDBLayer::AddNewTrainingData(int clsid, cv::Mat addImg, wchar_t* _code)
+{
+//	m_layerImage[clsid].GetLayerImageByID(wordIdx);
+	m_layerImage[clsid].AddNewTrainingData(clsid, addImg, _code);
+}
+
+void CMNDBLayer::UpdateLayers(int clsid, CString strDbPath)
+{
+	m_layerImage[clsid].UpdateLayer(strDbPath);
 }
 
 _stLayerImgInfo CMNDBLayer::GetLayerImgInfo(int clsid)
@@ -119,6 +128,25 @@ _stLayerImgInfo CMNDBLayer::GetLayerImgInfo(int clsid)
 	return info;
 }
 
+_stLayerImgInfo CMNDBLayer::GetLayerMasterInfo(int clsid)
+{
+	_stLayerImgInfo info;
+	info.wnum = _FIRSTLAYER_WNUM;
+	info.hnum = _FIRSTLAYER_WNUM;
+	info.unitRes = _FIRSTLAYER_CELL;
+	info.codelen = _C1_CODE_LEN;
+	return info;
+}
+
+
+std::vector<_stLayerInfo>* CMNDBLayer::GetLayerPositionInfo(int clsid)
+{
+	return m_layerImage[clsid].GetLayerPositionInfo();
+}
+int CMNDBLayer::GetTotalCodeNum(int clsid)
+{
+	return m_layerImage[clsid].GetCodeNum();
+}
 void CMNDBLayer::UpdateDBCode(int clsid, int id, wchar_t code)
 {
 	m_layerImage[clsid].UpdateDBCode(id, code);

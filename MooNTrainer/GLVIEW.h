@@ -21,7 +21,7 @@ public:
 	void SetMasterImage(cv::Mat& img);
 	void SetSubLayer(cv::Mat& img, int xid, int yid);
 //	void SetMasterImageSelection(cv::Rect rect);
-	void SetMasterImageSelection(int _wid, int wnum, int hnum);
+	void SetMasterImageSelection(int _wid, int wnum, int hnum, int _cellSize);
 	void SetSubImageSelection(int _wid, int wnum, int hnum);
 	int SelectObject3D(int x, int y, int rect_width, int rect_height, int selmode);
 	void ReleaseSelections();

@@ -51,12 +51,6 @@
     <ClInclude Include="FormViewEditDB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MNDBLayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MNDBLayerImage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ZEdit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -99,6 +93,12 @@
     <ClInclude Include="yolo_rnn_class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MNDBLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MNDBLayerImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MooNTrainer.cpp">
@@ -126,12 +126,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FormViewEditDB.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MNDBLayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MNDBLayerImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ZEdit.cpp">
@@ -165,6 +159,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DlgProbilityTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MNDBLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MNDBLayerImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -59,6 +59,17 @@ class CMooNTrainerView;
 extern CMooNTrainerView* pView;
 
 
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+//#include "opencv2/objdetect.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+//#include "opencv2/photo/photo.hpp"
+
+#include <vector>
+#include <map>
+
+
+
 
 #ifdef _UNICODE
 #if defined _M_IX86

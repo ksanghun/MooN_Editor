@@ -168,12 +168,12 @@ void CGLVIEW::SetSubLayer(cv::Mat& img, int xid, int yid)
 	layerimg.SetObjImage(img.cols, img.rows, SUB_LAYER_SIZE, pos, tid);
 	m_vecSubLayer.push_back(layerimg);	
 }
-void CGLVIEW::SetMasterImageSelection(int _wid, int wnum, int hnum)
+void CGLVIEW::SetMasterImageSelection(int _wid, int wnum, int hnum, int _cellSize)
 {
 //	m_masterImage.SetSelectionRect(rect.x, rect.y, rect.width, rect.height);
-	int xpos = (_wid % wnum)*_UNIT_RESOLOTION_W;
-	int ypos = (_wid / hnum)*_UNIT_RESOLOTION_W;
-	m_masterImage.SetSelectionRect(xpos, ypos, _UNIT_RESOLOTION_W, _UNIT_RESOLOTION_W);
+	int xpos = (_wid % wnum)*_cellSize;
+	int ypos = (_wid / hnum)*_cellSize;
+	m_masterImage.SetSelectionRect(xpos, ypos, _cellSize, _cellSize);
 }
 
 void CGLVIEW::ReleaseSelections()

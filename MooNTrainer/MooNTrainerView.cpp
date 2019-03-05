@@ -66,7 +66,7 @@ CMooNTrainerView::CMooNTrainerView()
 
 
 	m_leftTop = CPoint(0, 0);
-	m_widthStep = _UNIT_RESOLOTION_W;
+	m_widthStep = 32;
 	m_dispScale = 1.0f;
 	m_selCellId = 0;
 	m_selRect = cv::Rect(0, 0, 0, 0);
@@ -159,9 +159,11 @@ void CMooNTrainerView::LoadDBLayer(CString strPath)
 void CMooNTrainerView::ProcInitDBLayer()
 {
 	BeginWaitCursor();
-	m_dbLayer.Init(m_strClassPath);	
+	m_dbLayer.Init(m_strClassPath, false);	
 	EndWaitCursor();
 //	InvalidateRect(FALSE);
+
+	EndThread();
 
 	//m_dbLayerMasterImg = m_dbLayer.GetMasterImage(0);
 	//m_pVecLayerInfo = m_dbLayer.GetMasterImageInfo(0);
@@ -245,7 +247,7 @@ void CMooNTrainerView::DrawCvMat(CDC* pDC, cv::Mat& origin, CRect rect)
 	//m_leftTop.y = (rect.Height() - outImg.rows) / 2 + rect.top;
 	m_leftTop.x = 0;
 	m_leftTop.y = 0;
-	m_widthStep = (float)_UNIT_RESOLOTION_W * ((float)rect.Width() / (float)outImg.cols);
+	m_widthStep = (float)32 * ((float)rect.Width() / (float)outImg.cols);
 	m_dispScale = (float)origin.cols / (float)outImg.cols;
 
 	mfcImg.BitBlt(*pDC, m_leftTop.x, m_leftTop.y);
@@ -290,7 +292,8 @@ void CMooNTrainerView::SelectCellMaster(CPoint point, bool IsAddList)
 
 	if ((imgPosx < m_dbLayerMasterImg.cols) && (imgPosy < m_dbLayerMasterImg.rows)) {
 
-		_stLayerImgInfo info = m_dbLayer.GetLayerImgInfo(0);
+//		_stLayerImgInfo info = m_dbLayer.GetLayerImgInfo(0);
+		_stLayerImgInfo info = m_dbLayer.GetLayerMasterInfo(0);
 		int xid = imgPosx / info.unitRes;
 		int yid = imgPosy / info.unitRes;
 
@@ -307,7 +310,8 @@ void CMooNTrainerView::SelectCellMaster(CPoint point, bool IsAddList)
 
 //		if (m_dispImgId == 0) {  // In case of Master Image
 			if (m_selCellId < m_pVecLayerInfo->size()) {
-				wchar_t strcode = m_pVecLayerInfo->at(m_selCellId).strcode;
+			//	wchar_t strcode = m_pVecLayerInfo->at(m_selCellId).strcode;
+				wchar_t strcode = m_pVecLayerInfo->at(m_selCellId).vecCodes[0];
 				unsigned short uCode = strcode;
 				int trainNum = m_pVecLayerInfo->at(m_selCellId).vecPositionId.size();
 				strLog.Format(L"Code: %d (%s) \nTrained number: %d", uCode, CString(strcode), trainNum);
@@ -318,7 +322,7 @@ void CMooNTrainerView::SelectCellMaster(CPoint point, bool IsAddList)
 				
 				if (m_pViewImage) {
 				//	m_pViewImage->SetMasterImageSelection(m_selRect);
-					m_pViewImage->SetMasterImageSelection(m_selCellId, _C1_WNUM, _C1_HNUM);
+					m_pViewImage->SetMasterImageSelection(m_selCellId, info.wnum, info.hnum, info.unitRes);
 				}
 
 				if (IsAddList) {
@@ -326,7 +330,7 @@ void CMooNTrainerView::SelectCellMaster(CPoint point, bool IsAddList)
 					for (int k = 0; k < m_pVecLayerInfo->at(m_selCellId).vecPositionId.size(); k++) {
 						int charid = m_pVecLayerInfo->at(m_selCellId).vecPositionId[k];
 						wchar_t strgt;
-						cv::Mat cut = m_dbLayer.GetCutImagebyWorkPos(0, charid, strgt);
+						cv::Mat cut = m_dbLayer.GetCutImagebyWorkPos(0, charid, strgt, 1);
 						pMain->AddRecord(cut, strgt, '-', 0, m_selCellId, charid, 0);
 					}
 				}
@@ -389,7 +393,7 @@ void CMooNTrainerView::OnTimer(UINT_PTR nIDEvent)
 	// TODO: Add your message handler code here and/or call default
 	if (nIDEvent == _ENDTHREAD) {		
 		m_dbLayerMasterImg = m_dbLayer.GetMasterImage(0);
-		m_pVecLayerInfo = m_dbLayer.GetMasterImageInfo(0);
+		m_pVecLayerInfo = m_dbLayer.GetLayerPositionInfo(0);
 		m_dispImgId = 0;
 		if (m_pViewImage) {
 			cv::cvtColor(m_dbLayerMasterImg, m_dbLayerMasterImg, CV_GRAY2RGB);
@@ -439,7 +443,7 @@ void CMooNTrainerView::ValidateDBLayer()
 	for (int i = start; i < start + num; i++) {
 
 		wchar_t strgt;
-		cv::Mat cut = m_dbLayer.GetCutImagebyWorkPos(0, i, strgt);
+		cv::Mat cut = m_dbLayer.GetCutImagebyWorkPos(0, i, strgt, 1);
 		cv::Mat cutsrc = cut.clone();
 
 		m_pViewImage->SetSubImageSelection(i, _C1_WNUM, _C1_HNUM);
@@ -462,7 +466,9 @@ void CMooNTrainerView::ValidateDBLayer()
 		//	topRes.accur = res.accur[0];
 		//	topRes.code = res.code[0];
 		//}
-		m_pViewImage->SetMasterImageSelection(topRes.firstlayerIdx, _C1_WNUM, _C1_HNUM);
+		//m_pViewImage->SetMasterImageSelection(topRes.firstlayerIdx, _C1_WNUM, _C1_HNUM, _UNIT_RESOLOTION_W);
+		_stLayerImgInfo info = m_dbLayer.GetLayerMasterInfo(0);
+		m_pViewImage->SetMasterImageSelection(m_selCellId, info.wnum, info.hnum, info.unitRes);
 
 		bool ismatch = false;
 		if (topRes.code == strgt) {
@@ -594,20 +600,20 @@ int CMooNTrainerView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 		// init Manager //
 		SINGLETON_DataMng::GetInstance()->InitManager();
-		SINGLETON_DataMng::GetInstance()->LoadTextFileForTree(L"D:/test1.txt");
 
-		std::vector<_stMooNProb> vecRes;
-		wchar_t* input = L"그립";
-		SINGLETON_DataMng::GetInstance()->PredictNext(input, vecRes);
-		for (auto i = 0; i < vecRes.size(); i++) {
-			CString stroutput;
-			CString strCode;
-			if (vecRes[i].code == 32)
-				strCode = L"space";
-			else
-				strCode = (wchar_t)vecRes[i].code;
-			stroutput.Format(L"%s-%s(%3.2f)", input, strCode, vecRes[i].prob);
-		}
+		//SINGLETON_DataMng::GetInstance()->LoadTextFileForTree(L"D:/test1.txt");
+		//std::vector<_stMooNProb> vecRes;
+		//wchar_t* input = L"그립";
+		//SINGLETON_DataMng::GetInstance()->PredictNext(input, vecRes);
+		//for (auto i = 0; i < vecRes.size(); i++) {
+		//	CString stroutput;
+		//	CString strCode;
+		//	if (vecRes[i].code == 32)
+		//		strCode = L"space";
+		//	else
+		//		strCode = (wchar_t)vecRes[i].code;
+		//	stroutput.Format(L"%s-%s(%3.2f)", input, strCode, vecRes[i].prob);
+		//}
 
 
 		//bgimg.release();
