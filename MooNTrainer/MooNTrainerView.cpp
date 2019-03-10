@@ -441,6 +441,7 @@ void CMooNTrainerView::ValidateDBLayer()
 	int logidx = 0;
 
 	for (int i = start; i < start + num; i++) {
+//	for (int i = 1; i < 2; i++) {
 
 		wchar_t strgt;
 		cv::Mat cut = m_dbLayer.GetCutImagebyWorkPos(0, i, strgt, 1);

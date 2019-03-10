@@ -3,6 +3,8 @@
 #include <ctime>
 #include "MainFrm.h"
 
+#define _GEN_DB_TH 0.4f
+
 CMNDBLayerImage::CMNDBLayerImage()
 {
 	m_imgcnt = 0;
@@ -163,20 +165,22 @@ void CMNDBLayerImage::GenerateFirstLayerByShape(int minstrcode, int first_cellSi
 		int imgIdx = i / (m_wnum * m_hnum);
 		cv::Mat img = getWordCutImg(i, m_cellSizeW, m_imageDb[imgIdx].img, m_classId, m_wnum, m_hnum);
 		cv::resize(img, img, cv::Size(first_cellSize, first_cellSize));
-		cv::bitwise_not(img, img);
+//		cv::bitwise_not(img, img);
 
 		bool IsMatched = false;
 		for (auto j = 0; j < m_vecLayerInfo.size(); j++) {
 			cv::Mat cellimg = getWordCutImg(j, first_cellSize, m_firstlayerImage, 0, m_firstLayer_wNum, m_firstLayer_wNum);
-			cv::bitwise_not(cellimg, cellimg);
+//			cv::bitwise_not(cellimg, cellimg);
 
 			// Templete Matching //
-			float shapeSimilarity = templateMatching(img, cellimg);
-			if (shapeSimilarity > 0.85f) {
+	//		float shapeSimilarity = templateMatching(img, cellimg);
+			float shapeSimilarity = templateMatching(cellimg, img);
+			if (shapeSimilarity > _GEN_DB_TH) {
 
 				//cv::imshow("cellimg", cellimg);
 				//cv::imshow("img", img);
-				averageImg(cellimg, img, (int)m_vecLayerInfo[j].vecCodes.size());
+		//		averageImg(cellimg, img, (int)m_vecLayerInfo[j].vecCodes.size());
+//				averageImg(img, cellimg, (int)m_vecLayerInfo[j].vecCodes.size());
 				//cv::imshow("accur", cellimg);
 
 		//		cv::waitKey(10);
@@ -185,8 +189,8 @@ void CMNDBLayerImage::GenerateFirstLayerByShape(int minstrcode, int first_cellSi
 		//		cv::bitwise_not(cellimg, cellimg);		
 
 				cv::Rect r1 = getPositionByIndex(j, first_cellSize, 0, first_wnum, first_wnum);
-				cv::bitwise_not(cellimg, cellimg);
-				cellimg.copyTo(m_firstlayerImage(r1));
+				//cv::bitwise_not(cellimg, cellimg);
+				//cellimg.copyTo(m_firstlayerImage(r1));
 	
 				m_vecLayerInfo[j].vecCodes.push_back((unsigned short)m_vecStrCode[i][0]);
 				m_vecLayerInfo[j].vecPositionId.push_back(i);
@@ -202,7 +206,7 @@ void CMNDBLayerImage::GenerateFirstLayerByShape(int minstrcode, int first_cellSi
 		//	cv::bitwise_not(img, img);
 
 			cv::Rect r1 = getPositionByIndex((int)m_vecLayerInfo.size(), first_cellSize, 0, first_wnum, first_wnum);
-			cv::bitwise_not(img, img);
+//			cv::bitwise_not(img, img);
 			img.copyTo(m_firstlayerImage(r1));
 			_stLayerInfo layerInfo;
 			layerInfo.vecCodes.push_back((unsigned short)m_vecStrCode[i][0]);
@@ -383,10 +387,11 @@ void CMNDBLayerImage::GenerateFirstLayerByCode(int minstrcode, int first_cellSiz
 			
 			//img = deskew(img);
 			cv::bitwise_not(img, img);
-			if (iter->first > 10000) {  // in case of symbols //
+			if (iter->first < 10000) {  // in case of symbols //
 				img = FitBoundingBox(img);
 			}
 			accumulateImg(accur, img);
+		//	averageImg(accur, img, 0);
 			layerInfo.vecPositionId.push_back(iter->second[i]);
 		}
 		
@@ -420,6 +425,7 @@ void CMNDBLayerImage::GenerateFirstLayerByCode(int minstrcode, int first_cellSiz
 		//layerInfo.strcode = new wchar_t[m_strcodeLen];
 		//memset(layerInfo.strcode, 0x00, sizeof(wchar_t)*m_strcodeLen);
 //		layerInfo.strcode = (wchar_t)(unsigned short)iter->first;		
+		layerInfo.vecCodes.push_back((unsigned short)iter->first);
 		m_vecLayerInfo.push_back(layerInfo);
 	}
 	
@@ -553,13 +559,14 @@ _recognitionResult CMNDBLayerImage::GetMatchResultByPixel(cv::Mat& cutImg, _stMa
 {
 	// Normalization //
 	cv::Mat imgforMaster = cutImg.clone();
+	cv::threshold(imgforMaster, imgforMaster, 220, 255, cv::THRESH_OTSU);
 	//cv::bitwise_not(imgforMaster, imgforMaster);
 	////	cutImg = deskew(cutImg);
 	//imgforMaster = FitBoundingBox(imgforMaster);
 	//cv::bitwise_not(imgforMaster, imgforMaster);
 	//=============================//
 
-
+	float th = _GEN_DB_TH - 0.1f;
 	float accur = 0.0f;
 	int matchIdx = 0;
 //	cv::resize(imgforMaster, imgforMaster, cv::Size(m_cellResolution, m_cellResolution));
@@ -570,11 +577,19 @@ _recognitionResult CMNDBLayerImage::GetMatchResultByPixel(cv::Mat& cutImg, _stMa
 		cv::Rect r1 = getPositionByIndex(i, m_firstLayerCellSize, 0, m_firstLayer_wNum, m_firstLayer_wNum);
 		//cv::Mat layercut = cv::Mat(m_layerResolution + 4, m_layerResolution + 4, CV_8UC1, cv::Scalar(255));
 		//m_firstlayerImage(r1).copyTo(layercut(cv::Rect(2, 2, m_layerResolution, m_layerResolution)));
-		cv::Mat layercut = cv::Mat(m_firstLayerCellSize + 2, m_firstLayerCellSize + 2, CV_8UC1, cv::Scalar(255));
-		m_firstlayerImage(r1).copyTo(layercut(cv::Rect(1, 1, m_firstLayerCellSize, m_firstLayerCellSize)));
+		//cv::Mat layercut = cv::Mat(m_firstLayerCellSize + 2, m_firstLayerCellSize + 2, CV_8UC1, cv::Scalar(255));
+		//m_firstlayerImage(r1).copyTo(layercut(cv::Rect(1, 1, m_firstLayerCellSize, m_firstLayerCellSize)));
 
-		cv::resize(imgforMaster, imgforMaster, cv::Size(m_firstLayerCellSize, m_firstLayerCellSize));
+//		cv::resize(imgforMaster, imgforMaster, cv::Size(m_firstLayerCellSize, m_firstLayerCellSize));
+
+
+		cv::Mat layercut = cv::Mat(m_firstLayerCellSize, m_firstLayerCellSize, CV_8UC1, cv::Scalar(255));
+		m_firstlayerImage(r1).copyTo(layercut(cv::Rect(0, 0, m_firstLayerCellSize, m_firstLayerCellSize)));
+		
+
 		float prob = templateMatching(imgforMaster, layercut);
+	//	float prob = templateMatching(layercut, imgforMaster);
+
 		
 	//	float res = templateMatching(cutImg, layercut);
 
@@ -591,7 +606,10 @@ _recognitionResult CMNDBLayerImage::GetMatchResultByPixel(cv::Mat& cutImg, _stMa
 		//	accur = res;
 		//	matchIdx = i;
 		//}
-		if (prob > 0.05f) {
+		if (prob > th) {
+			//cv::imshow("cut", imgforMaster);
+			//cv::imshow("layer", layercut);
+			//cv::waitKey(1);
 			int idx = prob * 10000;
 			while (mapMatch.find(idx) != mapMatch.end()) {
 				idx++;
@@ -688,8 +706,8 @@ _recognitionResult CMNDBLayerImage::DeepMatching2(cv::Mat cutImg, int idx)
 	for(auto i=0; i<m_vecLayerInfo[idx].vecPositionId.size(); i++){
 	
 			//	cv::Mat infImg = GetCutImageByWordInx(iter->second[i], result.code);
-			cv::Mat layercut = cv::Mat(m_cellResolution + 4, m_cellResolution + 4, CV_8UC1, cv::Scalar(255));
-			GetCutImageByWordInx(m_vecLayerInfo[idx].vecPositionId[i], code, 1).copyTo(layercut(cv::Rect(2, 2, m_cellResolution, m_cellResolution)));
+			cv::Mat layercut = cv::Mat(m_cellResolution + 2, m_cellResolution + 2, CV_8UC1, cv::Scalar(255));
+			GetCutImageByWordInx(m_vecLayerInfo[idx].vecPositionId[i], code, 1).copyTo(layercut(cv::Rect(1, 1, m_cellResolution, m_cellResolution)));
 
 			float accur = templateMatching(cutImg, layercut);
 			//if (accur > 0.95f) {

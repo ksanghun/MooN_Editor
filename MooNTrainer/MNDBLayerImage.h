@@ -13,8 +13,10 @@
 #define _UNIT_RESOLOTION_W 32
 #define _C1_CODE_LEN 4
 
-#define _FIRSTLAYER_WNUM 200
-#define _FIRSTLAYER_CELL 16
+//#define _FIRSTLAYER_WNUM 200
+//#define _FIRSTLAYER_CELL 16
+#define _FIRSTLAYER_WNUM 100
+#define _FIRSTLAYER_CELL 32
 
 typedef struct {
 //	cv::Mat hogFeature;
@@ -23,7 +25,7 @@ typedef struct {
 //	wchar_t strcode;
 }_stLayerInfo;
 
-#define _MAX_CANDIDATE 20
+#define _MAX_CANDIDATE 40
 typedef struct {
 	float accur[_MAX_CANDIDATE];
 	wchar_t code[_MAX_CANDIDATE];

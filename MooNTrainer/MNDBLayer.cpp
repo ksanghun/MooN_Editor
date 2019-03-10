@@ -26,6 +26,7 @@ void CMNDBLayer::Init(CString strDbPath, bool IsNew)
 		m_layerImage[i].InitLayer(0, 60, 60, 4, 32, 32, strDbPath, IsNew);
 //		m_layerImage[i].GenerateFirstLayer(1, 32);
 		m_layerImage[i].GenerateFirstLayerByShape(1, _FIRSTLAYER_CELL, _FIRSTLAYER_WNUM);
+//		m_layerImage[i].GenerateFirstLayerByCode(1, _FIRSTLAYER_CELL, _FIRSTLAYER_WNUM);
 	}
 
 	clock_t end = clock();
